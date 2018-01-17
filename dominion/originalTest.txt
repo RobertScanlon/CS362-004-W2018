@@ -1,0 +1,384 @@
+Finished game.
+Player 0: 26
+Player 1: 1
+Finished game.
+Player 0: 30
+Player 1: 40
+Finished game.
+Player 0: 13
+Player 1: 26
+Finished game.
+Player 0: 20
+Player 1: 42
+Finished game.
+Player 0: 41
+Player 1: 29
+Finished game.
+Player 0: 30
+Player 1: 41
+Finished game.
+Player 0: 36
+Player 1: 26
+Finished game.
+Player 0: 21
+Player 1: 47
+Finished game.
+Player 0: 27
+Player 1: 34
+Finished game.
+Player 0: 27
+Player 1: 34
+Finished game.
+Player 0: 19
+Player 1: 39
+Finished game.
+Player 0: 29
+Player 1: 46
+Finished game.
+Player 0: 2
+Player 1: 13
+Finished game.
+Player 0: 29
+Player 1: 27
+Finished game.
+Player 0: 48
+Player 1: 30
+Finished game.
+Player 0: 34
+Player 1: 1
+Finished game.
+Player 0: 28
+Player 1: 27
+Finished game.
+Player 0: 8
+Player 1: 36
+Finished game.
+Player 0: 52
+Player 1: 22
+Finished game.
+Player 0: 19
+Player 1: 1
+Finished game.
+Player 0: 0
+Player 1: 33
+Finished game.
+Player 0: 6
+Player 1: 33
+Finished game.
+Player 0: 27
+Player 1: 0
+Finished game.
+Player 0: 28
+Player 1: 34
+Finished game.
+Player 0: 13
+Player 1: 15
+Finished game.
+Player 0: 1
+Player 1: 34
+Finished game.
+Player 0: 41
+Player 1: 14
+Finished game.
+Player 0: 28
+Player 1: 32
+Finished game.
+Player 0: 33
+Player 1: 21
+Finished game.
+Player 0: 0
+Player 1: 51
+Finished game.
+Player 0: 36
+Player 1: 35
+Finished game.
+Player 0: 35
+Player 1: 27
+Finished game.
+Player 0: 40
+Player 1: 26
+Finished game.
+Player 0: 7
+Player 1: 26
+Finished game.
+Player 0: 41
+Player 1: 27
+Finished game.
+Player 0: 36
+Player 1: 39
+Finished game.
+Player 0: 46
+Player 1: 32
+Finished game.
+Player 0: 1
+Player 1: 52
+Finished game.
+Player 0: 7
+Player 1: 40
+Finished game.
+Player 0: 29
+Player 1: 20
+Finished game.
+Player 0: 35
+Player 1: 0
+Finished game.
+Player 0: 33
+Player 1: 40
+Finished game.
+Player 0: 47
+Player 1: 13
+Finished game.
+Player 0: 9
+Player 1: 51
+Finished game.
+Player 0: 35
+Player 1: 26
+Finished game.
+Player 0: 19
+Player 1: 39
+Finished game.
+Player 0: 0
+Player 1: 19
+Finished game.
+Player 0: 27
+Player 1: 6
+Finished game.
+Player 0: 19
+Player 1: 39
+Finished game.
+Player 0: 27
+Player 1: 27
+Finished game.
+Player 0: 7
+Player 1: 27
+Finished game.
+Player 0: 27
+Player 1: 36
+Finished game.
+Player 0: 42
+Player 1: 34
+Finished game.
+Player 0: 34
+Player 1: 25
+Finished game.
+Player 0: 27
+Player 1: 33
+Finished game.
+Player 0: 27
+Player 1: 41
+Finished game.
+Player 0: 30
+Player 1: 27
+Finished game.
+Player 0: 33
+Player 1: 36
+Finished game.
+Player 0: 28
+Player 1: 47
+Finished game.
+Player 0: 33
+Player 1: 15
+Finished game.
+Player 0: 33
+Player 1: 8
+Finished game.
+Player 0: 29
+Player 1: 33
+Finished game.
+Player 0: 35
+Player 1: 33
+Finished game.
+Player 0: 35
+Player 1: 36
+Finished game.
+Player 0: 29
+Player 1: 42
+Finished game.
+Player 0: 40
+Player 1: 47
+Finished game.
+Player 0: 15
+Player 1: 34
+Finished game.
+Player 0: 27
+Player 1: 40
+Finished game.
+Player 0: 0
+Player 1: 45
+Finished game.
+Player 0: 13
+Player 1: 40
+Finished game.
+Player 0: 21
+Player 1: 20
+Finished game.
+Player 0: 1
+Player 1: 13
+Finished game.
+Player 0: 21
+Player 1: 51
+Finished game.
+Player 0: 21
+Player 1: 41
+Finished game.
+Player 0: 27
+Player 1: 7
+Finished game.
+Player 0: 29
+Player 1: 6
+Finished game.
+Player 0: 29
+Player 1: 41
+Finished game.
+Player 0: 21
+Player 1: 39
+Finished game.
+Player 0: 34
+Player 1: 21
+Finished game.
+Player 0: 34
+Player 1: 33
+Finished game.
+Player 0: 35
+Player 1: 48
+Finished game.
+Player 0: 6
+Player 1: 28
+Finished game.
+Player 0: 35
+Player 1: 21
+Finished game.
+Player 0: 22
+Player 1: 44
+Finished game.
+Player 0: 7
+Player 1: 13
+Finished game.
+Player 0: 40
+Player 1: 20
+Finished game.
+Player 0: 19
+Player 1: 9
+Finished game.
+Player 0: 7
+Player 1: 20
+Finished game.
+Player 0: 36
+Player 1: 42
+Finished game.
+Player 0: 27
+Player 1: 27
+Finished game.
+Player 0: 29
+Player 1: 47
+Finished game.
+Player 0: 24
+Player 1: 41
+Finished game.
+Player 0: 14
+Player 1: 0
+Finished game.
+Player 0: 26
+Player 1: 13
+Finished game.
+Player 0: 39
+Player 1: 27
+Finished game.
+Player 0: 20
+Player 1: 25
+Finished game.
+Player 0: 34
+Player 1: 25
+Finished game.
+Player 0: 2
+Player 1: 27
+Finished game.
+Player 0: 1
+Player 1: 40
+Finished game.
+Player 0: 21
+Player 1: 27
+Finished game.
+Player 0: 8
+Player 1: 7
+Finished game.
+Player 0: 28
+Player 1: 33
+Finished game.
+Player 0: 35
+Player 1: 28
+Finished game.
+Player 0: 33
+Player 1: 41
+Finished game.
+Player 0: 25
+Player 1: 15
+Finished game.
+Player 0: 28
+Player 1: 14
+Finished game.
+Player 0: 7
+Player 1: 7
+Finished game.
+Player 0: 33
+Player 1: 35
+Finished game.
+Player 0: 28
+Player 1: 27
+Finished game.
+Player 0: 0
+Player 1: 34
+Finished game.
+Player 0: 40
+Player 1: 34
+Finished game.
+Player 0: 12
+Player 1: 40
+Finished game.
+Player 0: 19
+Player 1: 8
+Finished game.
+Player 0: 35
+Player 1: 24
+Finished game.
+Player 0: 0
+Player 1: 18
+Finished game.
+Player 0: 14
+Player 1: 1
+Finished game.
+Player 0: 33
+Player 1: 27
+Finished game.
+Player 0: 35
+Player 1: 14
+Finished game.
+Player 0: 0
+Player 1: 46
+Finished game.
+Player 0: 34
+Player 1: 7
+Finished game.
+Player 0: 7
+Player 1: 27
+Finished game.
+Player 0: 1
+Player 1: 19
+Finished game.
+Player 0: 27
+Player 1: 35
+Finished game.
+Player 0: 27
+Player 1: 12
+Finished game.
+Player 0: 12
+Player 1: 24
+Finished game.
+Player 0: 7
+Player 1: 9
+Finished game.
+Player 0: 0
+Player 1: 24
+Finished game.
+Player 0: 7
+Player 1: 0

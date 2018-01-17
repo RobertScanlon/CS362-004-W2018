@@ -668,15 +668,15 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     {
     case adventurer:
 
-	return playAdventurer(state, currentPlayer, drawntreasure, cardDrawn, z);
+	return playAdventurer(state, currentPlayer, drawntreasure, cardDrawn, z, temphand);
 			
     case council_room:
 
-	return playCouncilRoom(state, currentPlayer);
+	return playCouncilRoom(state, currentPlayer, i, handPos);
 			
     case feast:
 
-	return playFeast(state, currentPlayer, temphand, x, choice1);
+	return playFeast(state, currentPlayer, temphand, x, choice1, i);
 			
     case gardens:
       return -1;
@@ -744,7 +744,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		
     case smithy:
 
-	return playSmithy(state, currentPlayer, handPos);
+	return playSmithy(state, currentPlayer, handPos, i);
 		
     case village:
       //+1 Card
@@ -1228,7 +1228,7 @@ int updateCoins(int player, struct gameState *state, int bonus)
   return 0;
 }
 
-int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure, int cardDrawn, int z)
+int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure, int cardDrawn, int z, int *temphand)
 {
     while(drawntreasure<2){
         //if the deck is empty we need to shuffle discard and add to deck
@@ -1255,7 +1255,7 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
     return 0;
 }
 
-int playSmithy(struct gameState *state, int currentPlayer, int handPos)
+int playSmithy(struct gameState *state, int currentPlayer, int handPos, i)
 {
     //+3 Cards
     for (i = 0; i < 3; i++) {
@@ -1280,7 +1280,7 @@ int playGreatHall(struct gameState *state, int currentPlayer, int handPos)
     return 0;
 }
 
-int playFeast(struct gameState *state, int currentPlayer, int *temphand, int x, int choice1)
+int playFeast(struct gameState *state, int currentPlayer, int *temphand, int x, int choice1, int i)
 {
     //gain card with cost up to 5
     //Backup hand
@@ -1332,7 +1332,7 @@ int playFeast(struct gameState *state, int currentPlayer, int *temphand, int x, 
     return 0;
 }
 
-int playCouncilRoom(struct gameState *state, int currentPlayer)
+int playCouncilRoom(struct gameState *state, int currentPlayer, int i, int handPos)
 {
     //+4 Cards
     for (i = 0; i < 4; i++) {
