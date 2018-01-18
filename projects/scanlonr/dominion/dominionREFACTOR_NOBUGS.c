@@ -1245,6 +1245,7 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
         } else {
             temphand[z]=cardDrawn;
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+            z++;
         }
     }
     while(z-1>=0){
@@ -1257,7 +1258,7 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
 int playSmithy(struct gameState *state, int currentPlayer, int handPos, i)
 {
     //+3 Cards
-    for (i = 0; i <= 3; i++) {
+    for (i = 0; i < 3; i++) {
         drawCard(currentPlayer, state);
     }
     
@@ -1291,6 +1292,7 @@ int playFeast(struct gameState *state, int currentPlayer, int *temphand, int x, 
     
     //Update Coins for Buy
     updateCoins(currentPlayer, state, 5);
+    x = 1;//Condition to loop on
     while( x == 1) {//Buy one card
         if (supplyCount(choice1, state) <= 0){
             if (DEBUG)
@@ -1350,6 +1352,9 @@ int playCouncilRoom(struct gameState *state, int currentPlayer, int i, int handP
     //put played card in played card pile
     discardCard(handPos, currentPlayer, state, 0);
     
+    return 0;
 }
 
+
 //end of dominion.c
+
