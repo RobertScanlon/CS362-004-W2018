@@ -1321,7 +1321,7 @@ int playFeast(struct gameState *state, int currentPlayer, int *temphand, int x, 
     }
     
     //Reset Hand
-    for (i = 0; i <= state->handCount[currentPlayer]; i++) {
+    for (i = 0; i < state->handCount[currentPlayer]; i++) {
         state->hand[currentPlayer][i] = temphand[i];
         temphand[i] = -1;
     }
