@@ -1,0 +1,31 @@
+******* BEGIN UNITTEST1 *******
+Test Shuffle with empty deck did not change deckCount passed: 0 = 0
+Test Shuffle with empty deck returned -1 passed: -1 = -1
+******* END UNITTEST1 *******
+
+******* BEGIN UNITTEST2 *******
+Hello, unittest2
+******* END UNITTEST2 *******
+
+******* BEGIN UNITTEST3 *******
+Hello, unittest3
+******* END UNITTEST3 *******
+
+******* BEGIN UNITTEST4 *******
+Hello, unittest4
+******* END UNITTEST4 *******
+
+******* BEGIN CARDTEST1 *******
+******* END CARDTEST1 *******
+
+******* BEGIN CARDTEST2 *******
+Hello, cardtest2
+******* END CARDTEST2 *******
+
+******* BEGIN CARDTEST3 *******
+Hello, cardtest3
+******* END CARDTEST3 *******
+
+******* BEGIN CARDTEST4 *******
+Hello, cardtest4
+******* END CARDTEST4 *******
