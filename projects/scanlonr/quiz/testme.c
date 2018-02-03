@@ -14,10 +14,11 @@ char *inputString()
 {
     static char str[6];
     int n;
+    int i;
 
     // build string of length 4 from set of characters
     // 'r', 'e', 's', 't'
-    for (int i = 0; i < 5; i++) {
+    for (i = 0; i < 5; i++) {
         n = rand() % 4;
         if (n == 0) {
             str[i] = 'r';

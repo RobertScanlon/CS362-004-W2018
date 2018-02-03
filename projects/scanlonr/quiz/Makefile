@@ -1,14 +1,14 @@
-build: testme.c
-	gcc -o testme testme.c -g -Wall -O0 -fprofile-arcs -ftest-coverage
+testme.o: testme.c
+	gcc -c testme.c
+
+build: testme.o
+	gcc -o testme testme.o
 
 run: testme
 	./testme
 
-coverage:
-
 clean:
 	rm -f testme
+	rm -f *.o
 	rm -f *.DS_Store
-	rm -f .dSYM
-	rm -f *.gcda
-	rm -f *.gcno
+	rm -rf *.dSYM
