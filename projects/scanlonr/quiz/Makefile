@@ -1,20 +1,14 @@
 build: testme.c
-	gcc -o prog testme.c -fprofile-arcs -ftest-coverage -O0 -g
+	gcc -o testme testme.c -g -Wall -O0 -fprofile-arcs -ftest-coverage
 
-buildmac: testme.c
-	gcc-7 -o prog testme.c -fprofile-arcs -ftest-coverage -O0
+run: testme
+	./testme
 
-run: prog
-	./prog
-
-test: prog
-	./gcov -b testme.c > results.out
+coverage:
 
 clean:
-	rm -f prog
-	rm -f *.out
-	rm -f *.gcov
+	rm -f testme
+	rm -f *.DS_Store
+	rm -f .dSYM
 	rm -f *.gcda
 	rm -f *.gcno
-	rm -f *.dSYM
-	rm -f *.DS_Store

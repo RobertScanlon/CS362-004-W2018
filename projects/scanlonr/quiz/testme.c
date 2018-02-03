@@ -5,37 +5,31 @@
 
 char inputChar()
 {
-    int n = -1;
-
-    while ((char)n != '[' &&
-           (char)n != '(' &&
-           (char)n != '{' &&
-           (char)n != ' ' &&
-           (char)n != 'a' &&
-           (char)n != 'x' &&
-           (char)n != '}' &&
-           (char)n != ')' &&
-           (char)n != ']') {
-        n = (rand() % 95) + 32;
-    }
-
-    return (char)n;
+    // return a random char from the set of
+    // printable ASCII characters
+    return (char)(rand() % 95) + 32;
 }
 
 char *inputString()
 {
     static char str[6];
+    int n;
+
+    // build string of length 4 from set of characters
+    // 'r', 'e', 's', 't'
     for (int i = 0; i < 5; i++) {
-        int n = -1;
-        while ((char)n != 'r' &&
-               (char)n != 'e' &&
-               (char)n != 's' &&
-               (char)n != 'e' &&
-               (char)n != 't') {
-            n = rand() % 123;
+        n = rand() % 4;
+        if (n == 0) {
+            str[i] = 'r';
+        } else if (n == 1) {
+            str[i] = 'e';
+        } else if (n == 2) {
+            str[i] = 's';
+        } else {
+            str[i] = 't';
         }
-        str[i] = (char)n;
     }
+    // add null terminator
     str[5] = '\0';
     return str;
 }
