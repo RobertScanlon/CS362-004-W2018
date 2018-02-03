@@ -37,70 +37,86 @@ player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
 unittests: dominion.o myAssert.o
-	echo "******* BEGIN UNITTEST1 *******" > unittestresults.out 2>&1
+	echo "*******************************************************" > unittestresults.out 2>&1
+	echo "******************* BEGIN UNITTEST1 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest1 unittest1.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./unitTest1 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END UNITTEST1 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN UNITTEST2 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END UNITTEST1 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN UNITTEST2 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest2 unittest2.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./unitTest2 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END UNITTEST2 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN UNITTEST3 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END UNITTEST2 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN UNITTEST3 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest3 unittest3.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./unitTest3 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END UNITTEST3 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN UNITTEST4 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END UNITTEST3 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN UNITTEST4 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest4 unittest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./unitTest4 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END UNITTEST4 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN CARDTEST1 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END UNITTEST4 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN CARDTEST1 ********************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o cardTest1 cardTest1.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./cardTest1 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END CARDTEST1 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN CARDTEST2 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END CARDTEST1 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN CARDTEST2 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o cardTest2 cardTest2.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./cardTest2 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END CARDTEST2 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN CARDTEST3 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END CARDTEST2 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN CARDTEST3 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o cardTest3 cardTest3.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./cardTest3 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END CARDTEST3 *******\n" >> unittestresults.out 2>&1
-	echo "******* BEGIN CARDTEST4 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END CARDTEST3 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
+	echo "*******************************************************" >> unittestresults.out 2>&1
+	echo "******************* BEGIN CARDTEST4 *******************" >> unittestresults.out 2>&1
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o cardTest4 cardTest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 	./cardTest4 >> unittestresults.out 2>&1
-	#gcov -abcfu dominion.c >> unittestresults.out 2>&1
-	gcov dominion.c >> unittestresults.out 2>&1
-	echo "******* END CARDTEST4 *******" >> unittestresults.out 2>&1
+	gcov -abcfu dominion.c >> unittestresults.out 2>&1
+	#gcov dominion.c >> unittestresults.out 2>&1
+	echo "******************* END CARDTEST4 *********************" >> unittestresults.out 2>&1
+	echo "*******************************************************\n\n" >> unittestresults.out 2>&1
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
