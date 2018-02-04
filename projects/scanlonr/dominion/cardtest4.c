@@ -36,6 +36,7 @@ void testCouncilRoom()
 	retValue = cardEffect(card, choice1, choice2, choice3, &testG, handPos, &bonus);
 	myAssert(retValue, 0, "council_room implementation returns 0");
 	myAssert(testG.handCount[player], refG.handCount[player] + 3, "Playing council_room increases players hand count by 3 (accounting for discard of council_room)");
+	myAssert(testG.numBuys, refG.numBuys + 1, "Playing council_room increased numBuys by +1");
 	for (int i = 1; i < numPlayers; i++) {
 		myAssert(testG.handCount[i], refG.handCount[i] + 1, "Other players hand count increased by 1");
 	}
@@ -51,6 +52,7 @@ void testCouncilRoom()
 	retValue = cardEffect(card, choice1, choice2, choice3, &testG, handPos, &bonus);
 	myAssert(retValue, 0, "council_room implementation returns 0");
 	myAssert(testG.handCount[player], refG.handCount[player] + 3, "Playing council_room increases players hand count by 3 (accounting for discard of council_room)");
+	myAssert(testG.numBuys, refG.numBuys + 1, "Playing council_room increased numBuys by +1");
 	for (int i = 1; i < numPlayers; i++) {
 		myAssert(testG.handCount[i], refG.handCount[i] + 1, "Other players hand count increased by 1");
 	}
