@@ -89,7 +89,10 @@ void testShuffle()
 	memcpy(&testG, &refG, sizeof(struct gameState));
 
 	int sameOrder = 1;
-	int testEstates, refEstates, testCoppers, refCoppers = 0;
+	int testEstates = 0;
+	int refEstates = 0;
+	int testCoppers = 0;
+	int refCoppers = 0;
 
 	retValue = shuffle(player, &testG);
 
