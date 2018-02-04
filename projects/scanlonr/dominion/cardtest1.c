@@ -7,6 +7,7 @@
 #include "myAssert.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void testSmithy()
 {
@@ -32,6 +33,7 @@ void testSmithy()
 
 	// set smithy as card in hand[handPos]
 	testG.hand[player][testG.handCount[player] - 1] = smithy;
+	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = smithy;
 
 	// set the to contain only 10 copper
@@ -52,7 +54,7 @@ void testSmithy()
 
 	// assert that new cards came from players deck
 	int c = 1;
-	for (int i = refG.handCount[player]; i < testG.handCount[player]; i++) {
+	for (int i = refG.handCount[player] - 1; i < testG.handCount[player]; i++) {
 		if (testG.hand[player][i] != copper) {
 			c = 0;
 		}
