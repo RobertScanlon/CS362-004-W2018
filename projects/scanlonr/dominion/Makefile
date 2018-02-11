@@ -38,8 +38,9 @@ player: player.c interface.o
 randomtestadventurer.out: dominion.o myAssert.o
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g $(CFLAGS)
-	gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o rngs.o myAssert.o $(CFLAGS)
+	gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o rngs.o myAssert.o $(CFLAGS) -O0
 	./randomtestadventurer > randomtestadventurer.out 2>&1
+	gcov -bfu dominion.c >> randomtestadventurer.out 2>&1
 
 unittestresults.out: dominion.o myAssert.o
 	echo -e  "**********************************************************************" > unittestresults.out 2>&1
@@ -130,6 +131,10 @@ unittestresults.out: dominion.o myAssert.o
 	#gcov dominion.c >> unittestresults.out 2>&1
 	echo -e  "******************* END CARDTEST4 council room implementation ********" >> unittestresults.out 2>&1
 	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
+
+randomTest: rngs.o
+	gcc -o randomTest randomTest.c -g rngs.o $(CFLAGS) -O0
+	./randomTest
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
