@@ -138,3 +138,4 @@ clean:
 	rm -rf *.dSYM
 	rm -f unitTest*
 	rm -f cardTest*
+	rm -f randomtestadventurer
