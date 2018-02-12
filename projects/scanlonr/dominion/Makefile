@@ -42,6 +42,13 @@ randomtestadventurer.out: dominion.o myAssert.o
 	./randomtestadventurer > randomtestadventurer.out 2>&1
 	gcov -bfu dominion.c >> randomtestadventurer.out 2>&1
 
+randomtestcard1.out: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g $(CFLAGS)
+	gcc -o randomtestcard1 randomtestcard1.c -g dominion.o rngs.o myAssert.o $(CFLAGS) -O0
+	./randomtestcard1 > randomtestcard1.out 2>&1
+	gcov -bfu dominion.c >> randomtestcard1.out 2>&1
+
 unittestresults.out: dominion.o myAssert.o
 	echo -e  "**********************************************************************" > unittestresults.out 2>&1
 	echo -e  "******************* BEGIN UNITTEST1 shuffle() function ***************" >> unittestresults.out 2>&1
@@ -143,4 +150,4 @@ clean:
 	rm -rf *.dSYM
 	rm -f unitTest*
 	rm -f cardTest*
-	rm -f randomtestadventurer
+	rm -f randomtestadventurer randomtestcard1 randomtestcard2

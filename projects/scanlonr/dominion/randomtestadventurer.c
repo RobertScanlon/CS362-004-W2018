@@ -11,7 +11,7 @@
 #include <time.h>
 #include <math.h>
 
-#define NUMTESTS 10000
+#define NUMTESTS 100000
 
 int myRandom(int min, int max) {
     return (rand() % (max - min + 1)) + min;
@@ -43,6 +43,9 @@ void adventurerChecker(struct gameState *post) {
     int treasurePre = 0;
     int treasurePost = 0;
 
+    int befHandCntPre = pre.handCount[player];
+    int befHancCntPost = post->handCount[player];
+
     for (int i = 0; i < pre.handCount[player]; i++) {
         if (pre.hand[player][i] == copper ||
             pre.hand[player][i] == silver ||
@@ -62,7 +65,10 @@ void adventurerChecker(struct gameState *post) {
 
     // perform what the adventurer implmentation should do on the 'pre' gameState
     while (numTreasure < 2) {
-        drawCard(player, &pre);
+        //drawCard(player, &pre);
+        pre.hand[player][pre.handCount[player]] = pre.deck[player][pre.deckCount[player] - 1];
+        pre.handCount[player]++;
+        pre.deckCount[player]--;
         currentCard = pre.hand[player][pre.handCount[player]-1];
         if (currentCard == copper || currentCard == silver || currentCard == gold) {
             numTreasure++;
@@ -70,6 +76,9 @@ void adventurerChecker(struct gameState *post) {
             tmp[tmpPos]=currentCard;
             pre.handCount[player]--;
             tmpPos++;
+            // pre.discard[player][pre.discardCount[player]] = pre.hand[player][pre.handCount[player] - 1];
+            // pre.handCount[player]--;
+            // pre.discardCount[player]++;
         }
     }
     for (int j = tmpPos - 1; j >= 0; j--) {
@@ -93,28 +102,12 @@ void adventurerChecker(struct gameState *post) {
                 treasurePost++;
             }
     }
-    myAssert((treasurePre - befTreasurePre), (treasurePost - befTreasurePost),
-              "Number of Treasure cards in hand after execution is correct", 1);
+    //myAssert((treasurePre - befTreasurePre), (treasurePost - befTreasurePost),
+    //          "Number of Treasure cards in hand after execution is correct", 1);
+    //myAssert(pre.handCount[player], befHandCntPre + 2, "Reference Hand Count increased by 2", 1);
+    //myAssert(post->handCount[player], befHancCntPost + 2, "Test Hand Count increased by 2", 1);
+    myAssert(befTreasurePre + 2, treasurePre, "+2 treasure", 1);
     myAssert(0, retValue, "cardEffect returns 0", 1);
-}
-
-void checkOracle()
-{
-    struct gameState G;
-    int seed = 1;
-    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
-                 sea_hag, tribute, smithy, council_room};
-
-    initializeGame(2, k, seed, &G);
-    G.deck[G.whoseTurn][0] = smithy;
-    G.deck[G.whoseTurn][1] = smithy;
-    G.deck[G.whoseTurn][2] = smithy;
-    G.deck[G.whoseTurn][3] = copper;
-    G.deck[G.whoseTurn][4] = smithy;
-    G.deck[G.whoseTurn][5] = smithy;
-    G.deck[G.whoseTurn][6] = silver;
-    G.deckCount[G.whoseTurn] = 7;
-    adventurerChecker(&G);
 }
 
 void randomTester()
@@ -122,28 +115,33 @@ void randomTester()
     fprintf(stderr, "BEGIN ADVENTURER RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
     struct gameState G;
     srand(time(NULL));
-    int treasures;
+    int treasures = 0;
+    int seed = 1;
+    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+             sea_hag, tribute, smithy, council_room};
+
     for (int i = 0; i < NUMTESTS; i++) {
-        for (int j = 0; j < sizeof(struct gameState); j++) {
-            ((char*)&G)[i] = myRandom(0, 256);
-        }
-        G.numPlayers = myRandom(1, MAX_PLAYERS);
-        G.whoseTurn = myRandom(0, G.numPlayers - 1);
+        // for (int j = 0; j < sizeof(struct gameState); j++) {
+        //     ((char*)&G)[i] = myRandom(0, 256);
+        // }
+
+        initializeGame(myRandom(1, MAX_PLAYERS), k, seed, &G);
 
         G.handCount[G.whoseTurn] = myRandom(0,  MAX_HAND);
         for (int h = 0; h < G.handCount[G.whoseTurn]; h++) {
             G.hand[G.whoseTurn][h] = myRandom(0,  treasure_map);
         }
 
-        while (treasures < 2) {
+        while (treasures < 10) {
             treasures = 0;
-            G.deckCount[G.whoseTurn] = myRandom(0,  MAX_DECK);
+            G.deckCount[G.whoseTurn] = myRandom(10,  MAX_DECK);
             for (int d = 0; d < G.deckCount[G.whoseTurn]; d++) {
                 G.deck[G.whoseTurn][d] = myRandom(0,  treasure_map);
                 if (G.deck[G.whoseTurn][d] == copper || G.deck[G.whoseTurn][d] == silver || G.deck[G.whoseTurn][d] == gold) {
                     treasures++;
                 }
             }
+        }
 
 
             G.discardCount[G.whoseTurn] = myRandom(0,  MAX_DECK);
@@ -153,7 +151,6 @@ void randomTester()
                     treasures++;
                 }
             }
-        }
 
         adventurerChecker(&G);
     }

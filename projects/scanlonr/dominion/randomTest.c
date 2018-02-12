@@ -5,26 +5,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <math.h>
 
-#define N 100000
+#define N 100
+
+int myRandom(int min, int max) {
+    return (rand() % (max - min + 1)) + min;
+}
 
 int
 main()
 {
-    SelectStream(0);
-    PutSeed(-1);
+    srand(time(NULL));
     int n;
     for (int i = 0; i < N; i++) {
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
-        n = Random();
+        n = myRandom(0, treasure_map);
+        fprintf(stderr, "%d\n", n);
     }
     return 0;
 }
