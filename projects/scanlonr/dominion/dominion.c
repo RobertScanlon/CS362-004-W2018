@@ -1246,7 +1246,7 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
             temphand[z]=cardDrawn;
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
             // this bug was added
-            z++;
+            //z++;
         }
     }
     while(z-1>=0){

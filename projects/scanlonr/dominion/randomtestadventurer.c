@@ -13,148 +13,135 @@
 
 #define NUMTESTS 100000
 
+void printGameState(struct gameState *g)
+{
+    fprintf(stderr, "numPlayers:      %d\n", g->numPlayers);
+    fprintf(stderr, "whoseTurn:       %d\n", g->whoseTurn);
+    fprintf(stderr, "phase:           %d\n", g->phase);
+    fprintf(stderr, "numActions:      %d\n", g->numActions);
+    fprintf(stderr, "coins:           %d\n", g->coins);
+    fprintf(stderr, "numBuys:         %d\n", g->numBuys);                                                               
+    
+    fprintf(stderr, "handCount:       %d\n", g->handCount[g->whoseTurn]);
+    for (int i = 0; i < g->handCount[g->whoseTurn]; i++) {
+        fprintf(stderr, "\thand[%d]: %d\n", i, g->hand[g->whoseTurn][i]);
+    }
+
+    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);                                               
+    for (int i = 0; i < g->deckCount[g->whoseTurn]; i++) {
+        fprintf(stderr, "\tdeck[%d]: %d\n", i, g->deck[g->whoseTurn][i]);
+    }
+    
+    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);                                            
+    for (int i = 0; i < g->discardCount[g->whoseTurn]; i++) {
+        fprintf(stderr, "\tdiscard[%d]: %d\n", i, g->discard[g->whoseTurn][i]);
+    }
+
+    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);                                                       
+}
+
 int myRandom(int min, int max) {
     return (rand() % (max - min + 1)) + min;
 }
 
-void adventurerChecker(struct gameState *post) {
-    // copy gamstate into 'pre' so it can be compared to its state
-    // before cardEffect is called
-    struct gameState pre;
-    memcpy(&pre, post, sizeof(struct gameState));
 
-    int player = pre.whoseTurn;
-
-    int numTreasure = 0;
-    int currentCard = 0;
-    int tmp[MAX_HAND];
-    int tmpPos = 0;
-
-    int retValue;
-
-    int choice1 = 0;
-    int choice2 = 0;
-    int choice3 = 0;
-    int handPos = 0;
-    int bonus = 0;
-
-    int befTreasurePre = 0;
-    int befTreasurePost = 0;
-    int treasurePre = 0;
-    int treasurePost = 0;
-
-    int befHandCntPre = pre.handCount[player];
-    int befHancCntPost = post->handCount[player];
-
-    for (int i = 0; i < pre.handCount[player]; i++) {
-        if (pre.hand[player][i] == copper ||
-            pre.hand[player][i] == silver ||
-            pre.hand[player][i] == gold) {
-                befTreasurePre++;
-            }
-    }
-    for (int i = 0; i < post->handCount[player]; i++) {
-        if (post->hand[player][i] == copper ||
-            post->hand[player][i] == silver ||
-            post->hand[player][i] == gold) {
-                befTreasurePost++;
-            }
-    }
-    // call cardEffect to execute adventurer code on the 'post' gameState
-    retValue = cardEffect(adventurer, choice1, choice2, choice3, post, handPos, &bonus);
-
-    // perform what the adventurer implmentation should do on the 'pre' gameState
-    while (numTreasure < 2) {
-        //drawCard(player, &pre);
-        pre.hand[player][pre.handCount[player]] = pre.deck[player][pre.deckCount[player] - 1];
-        pre.handCount[player]++;
-        pre.deckCount[player]--;
-        currentCard = pre.hand[player][pre.handCount[player]-1];
-        if (currentCard == copper || currentCard == silver || currentCard == gold) {
-            numTreasure++;
-        } else {
-            tmp[tmpPos]=currentCard;
-            pre.handCount[player]--;
-            tmpPos++;
-            // pre.discard[player][pre.discardCount[player]] = pre.hand[player][pre.handCount[player] - 1];
-            // pre.handCount[player]--;
-            // pre.discardCount[player]++;
+int adventurerOracle(struct gameState *post)
+{
+    int retValue = 0;
+    int b = 0;
+    int tBefore = 0;
+    for (int i = 0; i < post->handCount[0]; i++) {
+        if (post->hand[post->whoseTurn][i] == copper ||
+            post->hand[post->whoseTurn][i] == silver ||
+            post->hand[post->whoseTurn][i] == gold) {
+            tBefore++;
         }
     }
-    for (int j = tmpPos - 1; j >= 0; j--) {
-        pre.discard[player][pre.discardCount[player]] = tmp[j];
-        pre.discardCount[player]++;
-    }
+    int hCntBefore = post->handCount[post->whoseTurn];
 
-    // count the number of treasure cards in both gameStates after execution
-    // of adventurer code
-    for (int i = 0; i < pre.handCount[player]; i++) {
-        if (pre.hand[player][i] == copper ||
-            pre.hand[player][i] == silver ||
-            pre.hand[player][i] == gold) {
-                treasurePre++;
-            }
+    retValue = cardEffect(adventurer, 0, 0, 0, post, 0, &b);
+
+    int tAfter = 0;
+    for (int i = 0; i < post->handCount[0]; i++) {
+        if (post->hand[post->whoseTurn][i] == copper ||
+            post->hand[post->whoseTurn][i] == silver ||
+            post->hand[post->whoseTurn][i] == gold) {
+            tAfter++;
+        }
     }
-    for (int i = 0; i < post->handCount[player]; i++) {
-        if (post->hand[player][i] == copper ||
-            post->hand[player][i] == silver ||
-            post->hand[player][i] == gold) {
-                treasurePost++;
-            }
+    int hCntAfter = post->handCount[post->whoseTurn];
+
+    if (myAssert(tBefore + 2, tAfter, "Treasure in hand +2", 1) != 0) {
+        return -1;
     }
-    //myAssert((treasurePre - befTreasurePre), (treasurePost - befTreasurePost),
-    //          "Number of Treasure cards in hand after execution is correct", 1);
-    //myAssert(pre.handCount[player], befHandCntPre + 2, "Reference Hand Count increased by 2", 1);
-    //myAssert(post->handCount[player], befHancCntPost + 2, "Test Hand Count increased by 2", 1);
-    myAssert(befTreasurePre + 2, treasurePre, "+2 treasure", 1);
-    myAssert(0, retValue, "cardEffect returns 0", 1);
+    if (myAssert(hCntBefore + 2, hCntAfter, "Only 2 Treasure Cards added to hand", 1) != 0) {
+        return -1;
+    }
+    if (myAssert(0, retValue, "cardEffect returns 0 on adventurer play", 1) != 0) {
+        return -1;
+    }
+    return 0;
 }
 
 void randomTester()
 {
     fprintf(stderr, "BEGIN ADVENTURER RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
-    struct gameState G;
     srand(time(NULL));
     int treasures = 0;
+    int itr = 0;
     int seed = 1;
     int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
              sea_hag, tribute, smithy, council_room};
 
     for (int i = 0; i < NUMTESTS; i++) {
-        // for (int j = 0; j < sizeof(struct gameState); j++) {
-        //     ((char*)&G)[i] = myRandom(0, 256);
-        // }
-
-        initializeGame(myRandom(1, MAX_PLAYERS), k, seed, &G);
-
-        G.handCount[G.whoseTurn] = myRandom(0,  MAX_HAND);
-        for (int h = 0; h < G.handCount[G.whoseTurn]; h++) {
-            G.hand[G.whoseTurn][h] = myRandom(0,  treasure_map);
+        struct gameState *G = malloc(sizeof(struct gameState));
+        itr++;
+        initializeGame(2, k, 2, G);
+        G->handCount[0] = myRandom(10, MAX_HAND / 2);
+        for (int h = 0; h < G->handCount[0]; h++) {
+            G->hand[0][h] = myRandom(0,  treasure_map);
         }
 
-        while (treasures < 10) {
-            treasures = 0;
-            G.deckCount[G.whoseTurn] = myRandom(10,  MAX_DECK);
-            for (int d = 0; d < G.deckCount[G.whoseTurn]; d++) {
-                G.deck[G.whoseTurn][d] = myRandom(0,  treasure_map);
-                if (G.deck[G.whoseTurn][d] == copper || G.deck[G.whoseTurn][d] == silver || G.deck[G.whoseTurn][d] == gold) {
+        treasures = 0;
+
+        // make sure there are at least 2 treasure cards in the deck + discard
+        while (treasures < 2) {
+            
+            // let the deck be possibly empty to test empty deck code in
+            // adventurer implementation
+            G->deckCount[0] = myRandom(0,  MAX_DECK / 2);
+            for (int d = 0; d < G->deckCount[0]; d++) {
+                G->deck[0][d] = myRandom(0,  treasure_map);
+                if (G->deck[0][d] == copper || G->deck[0][d] == silver || G->deck[0][d] == gold) {
+                    treasures++;
+                }
+            }
+
+            // no not allow discard to be empty
+            // this avoid failure when both deck and discard are empty
+            // which would not happen in an actual game, therefore, no need to
+            // test
+            G->discardCount[0] = myRandom(10,  MAX_DECK / 2);
+            for (int c = 0; c < G->discardCount[0]; c++) {
+                G->discard[0][c] = myRandom(0,  treasure_map);
+                if (G->discard[0][c] == copper || G->discard[0][c] == silver || G->discard[0][c] == gold) {
                     treasures++;
                 }
             }
         }
 
-
-            G.discardCount[G.whoseTurn] = myRandom(0,  MAX_DECK);
-            for (int c = 0; c < G.handCount[G.whoseTurn]; c++) {
-                G.discard[G.whoseTurn][c] = myRandom(0,  treasure_map);
-                if (G.discard[G.whoseTurn][c] == copper || G.discard[G.whoseTurn][c] == silver || G.discard[G.whoseTurn][c] == gold) {
-                    treasures++;
-                }
-            }
-
-        adventurerChecker(&G);
+        // if any assertions failed, print gamestate and exit testing
+        if (adventurerOracle(G) != 0) {
+            printGameState(G);
+            free(G);
+            break;
+        }
+        free(G);
     }
-    fprintf(stderr, "END ADVENTURER RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
+    fprintf(stderr, "END ADVENTURER RANDOM TESTER %d ITERATIONS\n", itr);
+    if (itr == NUMTESTS) {
+        fprintf(stderr, "ALL TESTS PASSED\n");
+    }
 }
 
 
@@ -162,7 +149,6 @@ void randomTester()
 int
 main()
 {
-    //checkOracle();
     randomTester();
 	return 0;
 }
