@@ -7,9 +7,11 @@
 #include "myAssert.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 
 #define NUMTESTS 100000
+#define MAX_BUGS 1;
 
 void printGameState(struct gameState *g)
 {
@@ -31,6 +33,12 @@ int myRandom(int min, int max) {
 
 int councilRoomOracle(struct gameState *post)
 {
+    int pHandBug = 0;
+    int oHandBug = 0;
+    int buyBug = 0;
+    int playedBug = 0;
+    int returnBug = 0;
+
 	int b = 0;
     int retValue = 0;
 	int player = post->whoseTurn;
@@ -58,26 +66,41 @@ int councilRoomOracle(struct gameState *post)
 			othersHandCntAfter[i] = post->handCount[i];
 		}
 	}
-    
+
 	if (myAssert(handCntBefore + 3, handCntAfter, "Council Room Player added 4 cards to players hand and Discards 1 from hand", 1) != 0) {
-        return -1;
+        pHandBug++;
+        if (pHandBug > MAX_BUGS) {
+            return -1;
+        }
     }
 	if (myAssert(numBuysBefore + 1, numBuysAfter, "Council Room Player added +1 Buy", 1) != 0) {
-        return -1;
+        buyBug++;
+        if (buyBug > MAX_BUGS) {
+            return -1;
+        }
     }
     if (myAssert(playedCntBefore + 1, playedCntAfter, "Council Room Player added 1 card to Played Cards", 1) != 0) {
-        return -1;
+        playedBug++;
+        if (playedBug > MAX_BUGS) {
+            return -1;
+        }
     }
 	for (int i = 0; i < post->numPlayers; i++) {
 		if (i != player) {
 			if (myAssert(othersHandCnt[i] + 1, othersHandCntAfter[i], "Council Room Other Player added 1 card to hand", 1) != 0) {
-                return -1;
+                oHandBug++;
+                if (oHandBug > (MAX_BUGS * post->numPlayers)) {
+                    return -1;
+                }
             }
 		}
 	}
-//    if (myAssert(0, retValue, "cardEffect returns 0 when Council Room is played", 1) != 0) {
-//        return -1;
-//    }
+    if (myAssert(0, retValue, "cardEffect returns 0 when Council Room is played", 1) != 0) {
+        returnBug++;
+        if (returnBug > MAX_BUGS) {
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -101,10 +124,10 @@ void CouncilRoomRandomTester()
 			G->discardCount[j] = myRandom(10, MAX_DECK / 2);
             G->playedCardCount = 0;
 		}
-        
+
 		if (councilRoomOracle(G) != 0) {
             printGameState(G);
-            break;
+            //break;
         }
 	}
 

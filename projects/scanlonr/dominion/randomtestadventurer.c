@@ -12,6 +12,7 @@
 #include <math.h>
 
 #define NUMTESTS 100000
+#define MAX_BUGS 1
 
 void printGameState(struct gameState *g)
 {
@@ -20,24 +21,24 @@ void printGameState(struct gameState *g)
     fprintf(stderr, "phase:           %d\n", g->phase);
     fprintf(stderr, "numActions:      %d\n", g->numActions);
     fprintf(stderr, "coins:           %d\n", g->coins);
-    fprintf(stderr, "numBuys:         %d\n", g->numBuys);                                                               
-    
+    fprintf(stderr, "numBuys:         %d\n", g->numBuys);
+
     fprintf(stderr, "handCount:       %d\n", g->handCount[g->whoseTurn]);
     for (int i = 0; i < g->handCount[g->whoseTurn]; i++) {
         fprintf(stderr, "\thand[%d]: %d\n", i, g->hand[g->whoseTurn][i]);
     }
 
-    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);                                               
+    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);
     for (int i = 0; i < g->deckCount[g->whoseTurn]; i++) {
         fprintf(stderr, "\tdeck[%d]: %d\n", i, g->deck[g->whoseTurn][i]);
     }
-    
-    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);                                            
+
+    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);
     for (int i = 0; i < g->discardCount[g->whoseTurn]; i++) {
         fprintf(stderr, "\tdiscard[%d]: %d\n", i, g->discard[g->whoseTurn][i]);
     }
 
-    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);                                                       
+    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);
 }
 
 int myRandom(int min, int max) {
@@ -47,6 +48,10 @@ int myRandom(int min, int max) {
 
 int adventurerOracle(struct gameState *post)
 {
+    int treasureBug = 0;
+    int handBug = 0;
+    int returnBug = 0;
+
     int retValue = 0;
     int b = 0;
     int tBefore = 0;
@@ -72,13 +77,22 @@ int adventurerOracle(struct gameState *post)
     int hCntAfter = post->handCount[post->whoseTurn];
 
     if (myAssert(tBefore + 2, tAfter, "Treasure in hand +2", 1) != 0) {
-        return -1;
+        treasureBug++;
+        if (treasureBug > MAX_BUGS) {
+            return -1;
+        }
     }
     if (myAssert(hCntBefore + 2, hCntAfter, "Only 2 Treasure Cards added to hand", 1) != 0) {
-        return -1;
+        handBug++;
+        if (handBug > MAX_BUGS) {
+            return -1;
+        }
     }
     if (myAssert(0, retValue, "cardEffect returns 0 on adventurer play", 1) != 0) {
-        return -1;
+        returnBug++;
+        if (returnBug > MAX_BUGS) {
+            return -1;
+        }
     }
     return 0;
 }
@@ -106,7 +120,7 @@ void randomTester()
 
         // make sure there are at least 2 treasure cards in the deck + discard
         while (treasures < 2) {
-            
+
             // let the deck be possibly empty to test empty deck code in
             // adventurer implementation
             G->deckCount[0] = myRandom(0,  MAX_DECK / 2);
@@ -133,8 +147,8 @@ void randomTester()
         // if any assertions failed, print gamestate and exit testing
         if (adventurerOracle(G) != 0) {
             printGameState(G);
-            free(G);
-            break;
+            //free(G);
+            //break;
         }
         free(G);
     }
