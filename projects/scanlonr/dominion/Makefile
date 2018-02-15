@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 CFLAGS = -Wall -fpic -coverage -lm -std=c99
 
 rngs.o: rngs.h rngs.c
@@ -155,9 +157,6 @@ unittestresults.out: dominion.o myAssert.o
 	echo -e  "******************* END CARDTEST4 council room implementation ********" >> unittestresults.out 2>&1
 	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
 
-randomTest: rngs.o
-	gcc -o randomTest randomTest.c -g rngs.o $(CFLAGS) -O0
-	./randomTest
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
