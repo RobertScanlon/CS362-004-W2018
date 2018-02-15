@@ -11,7 +11,7 @@
 #include <time.h>
 #include <math.h>
 
-#define NUMTESTS 10
+#define NUMTESTS 10000
 #define MAX_BUGS 1
 
 // global counts of different bugs
@@ -52,13 +52,17 @@ int myRandom(int min, int max) {
 }
 
 
-int adventurerOracle(struct gameState *post, int handPos, int cardMarker)
+int adventurerOracle(struct gameState *post)
 {
     int retCode = 0;
     int retValue = 0;
     int b = 0;
     int tBefore = 0;
+
+    // get discard count before execution
     int disCntBefore = post->discardCount[0];
+
+    // count treasure cards before execution
     for (int i = 0; i < post->handCount[0]; i++) {
         if (post->hand[post->whoseTurn][i] == copper ||
             post->hand[post->whoseTurn][i] == silver ||
@@ -66,10 +70,13 @@ int adventurerOracle(struct gameState *post, int handPos, int cardMarker)
             tBefore++;
         }
     }
+
+    // get hand count before execution
     int hCntBefore = post->handCount[post->whoseTurn];
 
-    retValue = cardEffect(adventurer, 0, 0, 0, post, handPos, &b);
+    retValue = cardEffect(adventurer, 0, 0, 0, post, 0, &b);
 
+    // get values after code executes
     int tAfter = 0;
     for (int i = 0; i < post->handCount[0]; i++) {
         if (post->hand[post->whoseTurn][i] == copper ||
@@ -98,16 +105,14 @@ int adventurerOracle(struct gameState *post, int handPos, int cardMarker)
         }
     }
 
-    // make sure played card (at handPos) is not in hand after play
+    // make sure non treasures are discarded
     if (discardBug < MAX_BUGS) {
-        if (post->hand[0][handPos] == cardMarker) {
-            myAssert(0, 1, "Played card was discarded from hand", 1);
+        if (post->discardCount[0] <= disCntBefore) {
+            myAssert(0, 1, "Non treasure cards discarded from hand", 1);
             discardBug++;
             retCode = -1;
         }
     }
-
-
 
     // check that cardEffect return 0 after adventurer played
     if (returnBug < MAX_BUGS) {
@@ -125,20 +130,21 @@ void adventurerRandomTester()
     srand(time(NULL));
     int bugCount = 0;
     int treasures = 0;
-    int handPos;
-    int cardMarker = 99;
     int itr = 0;
     int seed = 1;
     int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
              sea_hag, tribute, smithy, council_room};
 
+    // create a new random game state for each test case
     for (int i = 0; i < NUMTESTS; i++) {
         struct gameState *G = malloc(sizeof(struct gameState));
         itr++;
         initializeGame(2, k, 2, G);
+
+        // hand count can be from 0 to max - 2
+        // because up to 2 cards can be added to the hand
+        // and we can not overflow the hand array
         G->handCount[0] = myRandom(1, MAX_HAND - 2);
-        handPos = myRandom(0, G->handCount[0] - 1);
-        G->hand[0][handPos] = cardMarker;
         for (int h = 0; h < G->handCount[0]; h++) {
             G->hand[0][h] = myRandom(0,  treasure_map);
         }
@@ -175,7 +181,7 @@ void adventurerRandomTester()
         }
 
         // if any assertions failed, print gamestate
-        if (adventurerOracle(G, handPos, cardMarker) != 0) {
+        if (adventurerOracle(G) != 0) {
             printGameState(G);
             bugCount++;
         }
