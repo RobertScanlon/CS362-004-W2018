@@ -125,17 +125,29 @@ void CouncilRoomRandomTester()
 	int seed = 1;
 	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
 			 sea_hag, tribute, smithy, council_room};
-	for (int i = 0; i < NUMTESTS; i++ ) {
+
+    // create a unique gamestate for each random test
+    for (int i = 0; i < NUMTESTS; i++ ) {
         struct gameState *G = malloc(sizeof(struct gameState));
         int numPlay = myRandom(2, MAX_PLAYERS);
         initializeGame(numPlay, k, 2, G);
         itr++;
+
+        // make current number of buys a 'reasonable' number
+        // including boundary case of 0
 		G->numBuys = myRandom(0, 100);
 		for (int j = 0; j < MAX_PLAYERS; j++) {
+
+            // MAX_DECK - 4 is max to avoid overflow
 			G->handCount[j] = myRandom(1, MAX_HAND - 4);
 			G->deckCount[j] = myRandom(0, MAX_DECK);
+
+            // min of 10 in case dekc is empty we still want to be
+            // able to draw cards
 			G->discardCount[j] = myRandom(10, MAX_DECK);
-            G->playedCardCount = 0;
+
+            // 'reasonable' played card count
+            G->playedCardCount = myRandom(0, 100);
 		}
 
 		if (councilRoomOracle(G) != 0) {
