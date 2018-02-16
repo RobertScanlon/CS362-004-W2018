@@ -10,8 +10,15 @@
 #include <time.h>
 #include <string.h>
 
-#define NUMTESTS 100000
-#define MAX_BUGS 1;
+#define NUMTESTS 10000
+#define MAX_BUGS 1
+
+// global bug counts
+int pHandBug = 0;
+int oHandBug = 0;
+int buyBug = 0;
+int playedBug = 0;
+int returnBug = 0;
 
 void printGameState(struct gameState *g)
 {
@@ -33,12 +40,7 @@ int myRandom(int min, int max) {
 
 int councilRoomOracle(struct gameState *post)
 {
-    int pHandBug = 0;
-    int oHandBug = 0;
-    int buyBug = 0;
-    int playedBug = 0;
-    int returnBug = 0;
-
+    int retCode = 0;
 	int b = 0;
     int retValue = 0;
 	int player = post->whoseTurn;
@@ -67,75 +69,88 @@ int councilRoomOracle(struct gameState *post)
 		}
 	}
 
-	if (myAssert(handCntBefore + 3, handCntAfter, "Council Room Player added 4 cards to players hand and Discards 1 from hand", 1) != 0) {
-        pHandBug++;
-        if (pHandBug > MAX_BUGS) {
-            return -1;
+    // check that +4 cards drawn -1 card discarded
+    if (pHandBug < MAX_BUGS) {
+        if (myAssert(handCntBefore + 3, handCntAfter, "Council Room Player added 4 cards to players hand and Discards 1 from hand", 1) != 0) {
+            pHandBug++;
+            retCode = -1;
         }
     }
-	if (myAssert(numBuysBefore + 1, numBuysAfter, "Council Room Player added +1 Buy", 1) != 0) {
-        buyBug++;
-        if (buyBug > MAX_BUGS) {
-            return -1;
+
+    // check that players buy is incremented by 1
+    if (buyBug < MAX_BUGS) {
+        if (myAssert(numBuysBefore + 1, numBuysAfter, "Council Room Player added +1 Buy", 1) != 0) {
+            buyBug++;
+            retCode = -1;
         }
     }
-    if (myAssert(playedCntBefore + 1, playedCntAfter, "Council Room Player added 1 card to Played Cards", 1) != 0) {
-        playedBug++;
-        if (playedBug > MAX_BUGS) {
-            return -1;
+
+    // played card count increases by one after execution
+    if (playedBug < MAX_BUGS) {
+        if (myAssert(playedCntBefore + 1, playedCntAfter, "Council Room Player added 1 card to Played Cards", 1) != 0) {
+            playedBug++;
+            retCode = -1;
         }
     }
-	for (int i = 0; i < post->numPlayers; i++) {
-		if (i != player) {
-			if (myAssert(othersHandCnt[i] + 1, othersHandCntAfter[i], "Council Room Other Player added 1 card to hand", 1) != 0) {
-                oHandBug++;
-                if (oHandBug > (MAX_BUGS * post->numPlayers)) {
-                    return -1;
+
+    // check that all other players gain a card
+    if (oHandBug < (MAX_BUGS * post->numPlayers)) {
+        for (int i = 0; i < post->numPlayers; i++) {
+            if (i != player) {
+                if (myAssert(othersHandCnt[i] + 1, othersHandCntAfter[i], "Council Room Other Player added 1 card to hand", 1) != 0) {
+                    oHandBug++;
+                    retCode = -1;
                 }
             }
-		}
-	}
-    if (myAssert(0, retValue, "cardEffect returns 0 when Council Room is played", 1) != 0) {
-        returnBug++;
-        if (returnBug > MAX_BUGS) {
-            return -1;
         }
     }
-    return 0;
+
+    // check that card effect returns 0 when council_room played
+    if (returnBug < MAX_BUGS) {
+        if (myAssert(0, retValue, "cardEffect returns 0 when Council Room is played", 1) != 0) {
+            returnBug++;
+            retCode = -1;
+        }
+    }
+
+    return retCode;
 }
 
 void CouncilRoomRandomTester()
 {
 	fprintf(stderr, "BEGIN COUNCIL ROOM RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
     int itr = 0;
-	struct gameState *G = malloc(sizeof(struct gameState));
+    int bugCount = 0;
 	srand(time(NULL));
 	int seed = 1;
 	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
 			 sea_hag, tribute, smithy, council_room};
 	for (int i = 0; i < NUMTESTS; i++ ) {
+        struct gameState *G = malloc(sizeof(struct gameState));
         int numPlay = myRandom(2, MAX_PLAYERS);
         initializeGame(numPlay, k, 2, G);
         itr++;
 		G->numBuys = myRandom(0, 100);
 		for (int j = 0; j < MAX_PLAYERS; j++) {
-			G->handCount[j] = myRandom(10, MAX_HAND / 2);
-			G->deckCount[j] = myRandom(0, MAX_DECK / 2);
-			G->discardCount[j] = myRandom(10, MAX_DECK / 2);
+			G->handCount[j] = myRandom(1, MAX_HAND - 4);
+			G->deckCount[j] = myRandom(0, MAX_DECK);
+			G->discardCount[j] = myRandom(10, MAX_DECK);
             G->playedCardCount = 0;
 		}
 
 		if (councilRoomOracle(G) != 0) {
             printGameState(G);
-            //break;
+            bugCount++;
         }
+        free(G);
 	}
 
 	fprintf(stderr, "END COUNCIL ROOM RANDOM TESTER %d ITERATIONS\n", itr);
-    if (itr == NUMTESTS) {
-        fprintf(stderr, "NO ALL TESTS PASSED\n");
+    if (bugCount == 0) {
+        fprintf(stderr, "ALL TESTS PASSED\n");
+    } else {
+        fprintf(stderr, "TESTING FOUND AT LEAST %d BUGS\n", bugCount);
     }
-    free(G);
 }
 
 int
