@@ -43,8 +43,8 @@ randomtestadventurer.out: dominion.o myAssert.o
 	gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o rngs.o myAssert.o $(CFLAGS) -O0
 	./randomtestadventurer > randomtestadventurer.out 2>&1
 	echo -e "\nBEGIN COVERAGE RESULTS\n" >> randomtestadventurer.out 2>&1
-	gcov -bfu dominion.c | tail -n 37 | head -n 7 >> randomtestadventurer.out 2>&1
-	cat dominion.c.gcov | tail -n 195 | head -n 47 >> randomtestadventurer.out 2>&1
+	gcov -bfu dominion.c >> randomtestadventurer.out 2>&1
+	cat dominion.c.gcov >> randomtestadventurer.out 2>&1
 	echo -e "\nEND COVERAGE RESULTS\n" >> randomtestadventurer.out 2>&1
 
 randomtestcard1.out: dominion.o myAssert.o
