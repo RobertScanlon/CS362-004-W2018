@@ -1,4 +1,5 @@
 /*
+    Adventurer Card
     randomtestadventurer.c
 */
 #include "dominion.h"
