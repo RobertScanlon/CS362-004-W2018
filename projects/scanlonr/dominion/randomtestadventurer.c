@@ -109,7 +109,7 @@ int adventurerOracle(struct gameState *post)
     // make sure non treasures are discarded
     if (discardBug < MAX_BUGS) {
         if (post->discardCount[0] <= disCntBefore) {
-            myAssert(0, 1, "Non treasure cards discarded from hand", 1);
+            myAssert(0, 1, "Non treasure cards discarded", 1);
             discardBug++;
             retCode = -1;
         }
