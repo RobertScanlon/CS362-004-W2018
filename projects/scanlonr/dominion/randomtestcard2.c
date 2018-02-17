@@ -16,6 +16,7 @@
 
 int handCountBug = 0;
 int coinCountBug = 0;
+int returnBug = 0;
 
 void printGameState(struct gameState *g)
 {
@@ -78,6 +79,14 @@ int StewardRoomOracle(struct gameState *post, int choice1, int p)
                 handCountBug++;
                 retCode = -1;
             }
+        }
+    }
+
+    // check that card effect returns 0 when steward is played
+    if (returnBug < MAX_BUGS) {
+        if (myAssert(0, retValue, "cardEffect returns 0 when Steward is played", 1) != 0) {
+            returnBug++;
+            retCode = -1;
         }
     }
 
