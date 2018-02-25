@@ -1,281 +1,207 @@
-/*******************************************************************************
- * Author:                  Melvin Drews
- * Date Created:            2/12/2018
- * Last Modification Date:  2/18/2018
- * Overview: random test suite for the adventurerEffect function in dominion.c
- *
- * Input: None
- * Output: Prints to stdout the PASS/FAIL status for each test along with 
- *          a diagnostic hint; additional debugging information if
- *          DEBUG is set to 1 in dominion.h
- * 
- *  Build this test with:
- *      make randomtestadventurer
- ******************************************************************************/
+/*
+    Adventurer Card
+    randomtestadventurer.c
+*/
+#include "dominion.h"
+#include "dominion_helpers.h"
+#include "rngs.h"
+#include "myAssert.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <math.h>
 
-#include "randTestCommon.h"
+#define NUMTESTS 10000
+#define MAX_BUGS 1
 
-int main() {
-    int runs, i, discardSize, deckSize;
-    int handSize, result, found, val, undecked;
-    int currentPlayer;
-    int failures = 0;
-    
-    //Tracking for current values
-    int deckTreasure, discardTreasure;
-    int handCopper, handSilver, handGold;
-    int deckCopper, deckSilver, deckGold;
-    int discardCopper=0, discardSilver=0, discardGold=0;
-    
-    //The 2 treasures that should be pulled into currentPlayer hand
-    int treasure1=-1, treasure2=-1; //What the treasure cards are
-    //Where they were found in deck or discard pile
-    int t1DeckPos, t2DeckPos, t1DiscPos, t2DiscPos;
-    
-    //Test result explanation strings
-    char *param1 = "deck treasure";
-    char *param2 = "available treasure";
-    char *param3 = "new handSize";
-    char *param4 = "adding treasure1 to hand";
-    char *param5 = "adding treasure2 to hand";
-    char *param6 = "removing cards from deck";
-    char *param7 = "discarding drawn cards";
-    char *param8 = "discard size";
-    char *param9 = "deck size";
-    char param99[32];
-    char* param;
-    param = param99;
-    
-    //Setup the game state
-    struct gameState g;
-    struct gameState * game = &g;
-    
-    PlantSeeds(-1);
-    
-    //Run the test suite 1000 times
-    for(runs = 0; runs < 1000; runs++) {
-        deckTreasure = 0;
-        discardTreasure = 0;
-        undecked = 0;
-        handCopper = 0;
-        handSilver = 0;
-        handGold = 0;
-        deckCopper = 0;
-        deckSilver = 0;
-        deckGold = 0;
-        discardCopper = 0;
-        discardSilver = 0;
-        discardGold = 0;
-        treasure1=-1;
-        treasure2=-1;
-        
-        memset(game,0,sizeof(struct gameState));
-        randGame(game);
+// global counts of different bugs
+int treasureBug = 0;
+int handBug = 0;
+int discardBug = 0;
+int returnBug = 0;
 
-        //Select a random player. This will test if the card effect works
-        //differently depending on player number
-        randPlayer(game);
-        
-        currentPlayer = game->whoseTurn;    //record the currentPlayer
+void printGameState(struct gameState *g)
+{
+    fprintf(stderr, "numPlayers:      %d\n", g->numPlayers);
+    fprintf(stderr, "whoseTurn:       %d\n", g->whoseTurn);
+    fprintf(stderr, "phase:           %d\n", g->phase);
+    fprintf(stderr, "numActions:      %d\n", g->numActions);
+    fprintf(stderr, "coins:           %d\n", g->coins);
+    fprintf(stderr, "numBuys:         %d\n", g->numBuys);
 
-        //Randomize the cards in currentPlayer deck, using cards that are in play
-        randomizeCards(game, currentPlayer);
-        
-        //We need to know how many copper, silver, and gold are in currentPlayer
-        //deck, hand, and discard, as well as supply to test the card effect
-        for(i = 0; i < game->handCount[currentPlayer]; i++) {
-            switch(game->hand[currentPlayer][i]) {
-                case copper:
-                    handCopper++;
-                    break;
-                case silver:
-                    handSilver++;
-                    break;
-                case gold:
-                    handGold++;
-            }
-        }
-        t1DeckPos = -1;
-        t2DeckPos = -1;
-        t1DiscPos = -1;
-        t2DiscPos = -1;
-        
-        for(i = game->deckCount[currentPlayer] - 1; i >= 0; i--) {
-            found = 0;
-            switch(game->deck[currentPlayer][i]) {
-                case copper:
-                    deckCopper++;
-                    setTreasure(&treasure1, &treasure2, copper);
-                    found++;
-                    break;
-                case silver:
-                    deckSilver++;
-                    setTreasure(&treasure1, &treasure2, silver);
-                    found++;
-                    break;
-                case gold:
-                    deckGold++;
-                    setTreasure(&treasure1, &treasure2, gold);
-                    found++;
-            }
-            if(found) {
-                if(t1DeckPos == -1) {   //Is treasure position marked yet?
-                    t1DeckPos = i;      //1st treasure in deck is here
-                } else if(t2DeckPos == -1) {    //Is 2nd treasure marked?
-                    t2DeckPos = i;      //2nd treasure in deck is here
-                }
-            }
-        }
-        for(i = game->discardCount[currentPlayer] - 1; i >= 0; i--) {
-            found = 0;
-            switch(game->discard[currentPlayer][i]) {
-                case copper:
-                    discardCopper++;
-                    setTreasure(&treasure1, &treasure2, copper);
-                    found++;
-                    break;
-                case silver:
-                    discardSilver++;
-                    setTreasure(&treasure1, &treasure2, silver);
-                    found++;
-                    break;
-                case gold:
-                    discardGold++;
-                    setTreasure(&treasure1, &treasure2, gold);
-                    found++;
-            }
-            if(found) {
-                if(t1DiscPos == -1) {   //Is treasure position marked yet?
-                    t1DiscPos = i;      //1st treasure in discard pile is here
-                } else if(t2DiscPos == -1) {    //Is 2nd treasure marked?
-                    t2DiscPos = i;      //2nd treasure in discard pile is here
-                }
-            }
-        }
-        
-        deckTreasure = deckCopper + deckSilver + deckGold;
-        discardTreasure = discardCopper + discardSilver + discardGold;
-        handSize = game->handCount[currentPlayer];
-        deckSize = game->deckCount[currentPlayer];
-        discardSize = game->discardCount[currentPlayer];
+    fprintf(stderr, "handCount:       %d\n", g->handCount[g->whoseTurn]);
+    // for (int i = 0; i < g->handCount[g->whoseTurn]; i++) {
+    //     fprintf(stderr, "\thand[%d]: %d\n", i, g->hand[g->whoseTurn][i]);
+    // }
 
-        //run the card effect function
-        adventurerEffect(game, currentPlayer);
+    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);
+    // for (int i = 0; i < g->deckCount[g->whoseTurn]; i++) {
+    //     fprintf(stderr, "\tdeck[%d]: %d\n", i, g->deck[g->whoseTurn][i]);
+    // }
 
-        /*Test Conditions:
-         * Condition1: currentPlayer handCount should have increased by 2
-         * Condition 2: 1st two treasure cards from deck should be pulled into
-         *      currentPlayer hand
-         * Condition 3: cards up to and including the 2 treasure cards have
-         *      been removed from currentPlayer deck
-         * Condition 4: cards removed from currentPlayer deck have been
-         *      added to currentPlayer discard pile
-         * */
-        memset(param99, 0, sizeof param99);
-        //Condition1 true?
-        //Test if handCount increased by exactly the right number
-        if((deckTreasure + discardTreasure) >= 2) {
-            val = 2;
-        } else if((deckTreasure + discardTreasure) == 1) {
-            val = 1;
-        } else val = 0;
-        result = myCompare((handSize + val), game->handCount[currentPlayer]);
-        sprintf(param99, "%s", param2);
-        printResult(result, param, (deckTreasure + discardTreasure));
-        if(result) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            sprintf(param99, "%s", param3);
-            printResult(2, param, (handSize + val));
-//            if(DEBUG) {
-//                printf("DEBUG: original deckCount was = %i\n", deckSize);
-//                printf("DEBUG: original discardCount was = %i\n", discardSize);
-//                printf("DEBUG: original handSize was = %i\n", handSize);
-//                printf("DEBUG: current handCount = %i\n", game->handCount[currentPlayer]);
-//                printVars(game);
-//            }
-        }
+    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);
+    // for (int i = 0; i < g->discardCount[g->whoseTurn]; i++) {
+    //     fprintf(stderr, "\tdiscard[%d]: %d\n", i, g->discard[g->whoseTurn][i]);
+    // }
 
-        //Condition2 true?
-        //Due to possible shuffling, test only works if treasure in deck > 0
-        if((treasure1 > -1) && (t1DeckPos > -1)){
-            //Test if treasure1 was added to hand
-            memset(param99, 0, sizeof param99);
-            result = myCompare(game->hand[currentPlayer][handSize], treasure1);
-            sprintf(param99, "%s", param4);
-            printResult(result, param, treasure1);
-            if(result) {
-                failures++;
-                memset(param99, 0, sizeof param99);
-                sprintf(param99, "%s", param1);
-                printResult(2, param, deckTreasure);
-            }
-        }
-        //Due to possible shuffling, test only works if treasure in deck > 1
-        if((treasure2 > -1) && (t2DeckPos > -1)) {
-            //Test if treasure2 was added to hand
-            memset(param99, 0, sizeof param99);
-            result = myCompare(game->hand[currentPlayer][handSize + 1], treasure2);
-            sprintf(param99, "%s", param5);
-            printResult(result, param, treasure2);
-            if(result) {
-                failures++;
-                memset(param99, 0, sizeof param99);
-                sprintf(param99, "%s", param1);
-                printResult(2, param, deckTreasure);
-            }
-        }
+    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);
+}
 
-        //Condition 3 true?
-        //Test if deckCount was reduced by number of cards drawn
-        //Due to possible shuffling, test only works if treasure in deck > 1
-        if(deckTreasure > 1) {
-            memset(param99, 0, sizeof param99);
-            result = myCompare(game->deckCount[currentPlayer], t2DeckPos);
-            sprintf(param99, "%s", param6);
-            undecked = deckSize - t2DeckPos;
-            printResult(result, param, undecked);
-            if(result) {
-                failures++;
-                memset(param99, 0, sizeof param99);
-                sprintf(param99, "%s", param9);
-                printResult(2, param, (deckSize - undecked));
-            }
-        }
+int myRandom(int min, int max) {
+    return (rand() % (max - min + 1)) + min;
+}
 
-        //Condition 4 true?
-        //Test if non-treasure cards drawn from deck were added to discard pile
-        //Calculate number of treasure cards that should've been kept
-        if((deckTreasure + discardTreasure) >= 2) {
-            val = 2;
-        } else if ((deckTreasure + discardTreasure) == 1) {
-            val = 1;
-        } else {
-            val = 0;
-        }
-        //Calculate number of deck cards discarded
-        if(deckTreasure <= 2) {
-            undecked = deckSize;
-        } else {
-            undecked = deckSize - t2DeckPos;
-        }
-        val = undecked - val;   //number that should've been added to discard
-        memset(param99, 0, sizeof param99);
-        result = myCompare(game->discardCount[currentPlayer],
-                (discardSize + undecked));
-        sprintf(param99, "%s", param7);
-        printResult(result, param, undecked);
-        if(result) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            sprintf(param99, "%s", param8);
-            printResult(2, param, (discardSize + val));
-//            if(DEBUG) {
-//                printf("\tActural current discardCount = %i\n",
-//                        game->discardCount[currentPlayer]);
-//            }
+
+int adventurerOracle(struct gameState *post)
+{
+    int retCode = 0;
+    int retValue = 0;
+    int b = 0;
+    int tBefore = 0;
+
+    // get discard count before execution
+    int disCntBefore = post->discardCount[0];
+
+    // count treasure cards before execution
+    for (int i = 0; i < post->handCount[0]; i++) {
+        if (post->hand[post->whoseTurn][i] == copper ||
+            post->hand[post->whoseTurn][i] == silver ||
+            post->hand[post->whoseTurn][i] == gold) {
+            tBefore++;
         }
     }
-    printSummary(failures);
-    return 0;
+
+    // get hand count before execution
+    int hCntBefore = post->handCount[post->whoseTurn];
+
+    //retValue = cardEffect(adventurer, 0, 0, 0, post, 0, &b);
+    retValue = adventurerEffect(post, post->whoseTurn);
+
+    // get values after code executes
+    int tAfter = 0;
+    for (int i = 0; i < post->handCount[0]; i++) {
+        if (post->hand[post->whoseTurn][i] == copper ||
+            post->hand[post->whoseTurn][i] == silver ||
+            post->hand[post->whoseTurn][i] == gold) {
+            tAfter++;
+        }
+    }
+    int hCntAfter = post->handCount[post->whoseTurn];
+
+    // check that the number of treasure cards in the player's hand
+    // increases by 2 after calling code
+    if (treasureBug < MAX_BUGS) {
+        if (myAssert(tBefore + 2, tAfter, "Treasure in hand +2", 1) != 0) {
+            treasureBug++;
+            retCode = -1;
+        }
+    }
+
+    // check that players hand only contains one more card
+    // to account for discarding played card
+    if (handBug < MAX_BUGS) {
+        if (myAssert(hCntBefore + 1, hCntAfter, "Hand Count increased by 1 (+2 treasure, -1 card played)", 1) != 0) {
+            handBug++;
+            retCode = -1;
+        }
+    }
+
+    // make sure non treasures are discarded
+    if (discardBug < MAX_BUGS) {
+        if (post->discardCount[0] <= disCntBefore) {
+            myAssert(0, 1, "Non treasure cards discarded", 1);
+            discardBug++;
+            retCode = -1;
+        }
+    }
+
+    // check that cardEffect return 0 after adventurer played
+    if (returnBug < MAX_BUGS) {
+        if (myAssert(0, retValue, "cardEffect returns 0 on adventurer play", 1) != 0) {
+            returnBug++;
+            retCode = -1;
+        }
+    }
+    return retCode;
+}
+
+void adventurerRandomTester()
+{
+    fprintf(stderr, "BEGIN ADVENTURER RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
+    srand(time(NULL));
+    int bugCount = 0;
+    int treasures = 0;
+    int itr = 0;
+    int seed = 1;
+    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+             sea_hag, tribute, smithy, council_room};
+
+    // create a new random game state for each test case
+    for (int i = 0; i < NUMTESTS; i++) {
+        struct gameState *G = malloc(sizeof(struct gameState));
+        itr++;
+        initializeGame(2, k, 2, G);
+
+        // hand count can be from 0 to max - 2
+        // because up to 2 cards can be added to the hand
+        // and we can not overflow the hand array
+        G->handCount[0] = myRandom(1, MAX_HAND - 2);
+        for (int h = 0; h < G->handCount[0]; h++) {
+            G->hand[0][h] = myRandom(0,  treasure_map);
+        }
+
+        treasures = 0;
+
+        // make sure there are at least 2 treasure cards in the deck + discard
+        while (treasures < 2) {
+
+            // let the deck be possibly empty to test empty deck code in
+            // adventurer implementation
+            G->deckCount[0] = myRandom(0,  MAX_DECK);
+            for (int d = 0; d < G->deckCount[0]; d++) {
+                G->deck[0][d] = myRandom(0,  treasure_map);
+                if (d == 0) {
+                    G->deck[0][d] = smithy;
+                }
+                if (G->deck[0][d] == copper || G->deck[0][d] == silver || G->deck[0][d] == gold) {
+                    treasures++;
+                }
+            }
+
+            // no not allow discard to be empty
+            // this avoid failure when both deck and discard are empty
+            // which would not happen in an actual game, therefore, no need to
+            // test
+            G->discardCount[0] = myRandom(10,  MAX_DECK);
+            for (int c = 0; c < G->discardCount[0]; c++) {
+                G->discard[0][c] = myRandom(0,  treasure_map);
+                if (G->discard[0][c] == copper || G->discard[0][c] == silver || G->discard[0][c] == gold) {
+                    treasures++;
+                }
+            }
+        }
+
+        // if any assertions failed, print gamestate
+        if (adventurerOracle(G) != 0) {
+            printGameState(G);
+            bugCount++;
+        }
+        free(G);
+    }
+    fprintf(stderr, "END ADVENTURER RANDOM TESTER %d ITERATIONS\n", itr);
+    if (bugCount == 0) {
+        fprintf(stderr, "ALL TESTS PASSED\n");
+    } else {
+        fprintf(stderr, "TESTING FOUND AT LEAST %d BUGS\n", bugCount);
+    }
+}
+
+
+
+int
+main()
+{
+    adventurerRandomTester();
+	return 0;
 }

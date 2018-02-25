@@ -1,106 +1,134 @@
-/*******************************************************************************
- * Author:                  Melvin Drews
- * Date Created:            1/29/2018
- * Last Modification Date:  2/5/2018
- * Overview: Unit test for the isGameOver function in dominion.c
- *
- * Input: None
- * Output: Prints to stdout the PASS/FAIL status for each test along with 
- *          a diagnostic hint
- * 
- *  Based on the testUpdateCoins.c code template provided as part of OSU CS362
- *  
- *  Build this test with:
- *      make test1
- ******************************************************************************/
-
+/*
+ * unit test 1 shuffle()
+ */
 #include "dominion.h"
 #include "dominion_helpers.h"
-#include "unitTestCommon.h"
-#include <string.h>
+#include "rngs.h"
+#include "myAssert.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-int main() {
-    int i, j, expect, result, emptyPiles, zeroPiles, currentPile;
-    int failCount = 0;
-    char* param1 = "province supplyCount";
-    char* param2 = "empty supply piles";
-    char* param3 = "last emptied supply pile";
-    char* param;
-    struct gameState G;
+void testShuffle()
+{
+	int player = 0;
+	struct gameState testG;
+	struct gameState refG;
+	int retValue = -5;
+	int seed = 1;
+	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+			     sea_hag, tribute, smithy, council_room};
 
-    printf ("TESTING isGameOver():\n\n");
-    
-    //Test correct evaluation of province card supply empty
-    memset(&G, 23, sizeof(struct gameState));   // clear the game state
-    G.supplyCount[province] = 0;
-    expect = 1;     //Game should be over
-    param = param1;
-    do {
-        result = isGameOver(&G);
-        result = myCompare(expect, result);
-        if(result != 0) failCount++;
-        printResult(result, param, G.supplyCount[province]);
-                
-        ++G.supplyCount[province];
-        expect = 0;     //Game should not be over
-    } while(G.supplyCount[province] < 2);
-    //There are now some cards (at least 1) in the province pile
-    
-    //Test evaluation of 3 supply piles at 0 (excluding province)
-    param = param2;
-    emptyPiles = 4;     //The number of supply piles we want to empty
-    zeroPiles = 0;      //The number of supply piles we have emptied
-    currentPile = -1;    //Current supply pile being emptied
-    while(zeroPiles < emptyPiles) {
-        currentPile++;
-        if(currentPile == province) {   //Don't empty the province pile
-            continue;
-        }
-        G.supplyCount[currentPile] = 0;
-        zeroPiles++;
-    }
-    // zeroPiles should = emptyPiles
-    //Test isGameOver
-    expect = 1;     //Game should be over
-    result = isGameOver(&G);
-    result = myCompare(expect, result);
-    if(result != 0) failCount++;
-    printResult(result, param, zeroPiles);
-    
-    //Test effect of each supply pile being empty, varying # of empty piles
-    i = currentPile;    //Backward moving index
-    while((i >= 0) && (zeroPiles >= 0)) {
-        if(i == province) {
-            i--;
-            continue;     //province won't be empty
-        }
-        j = copper;  //Use as forward moving tracker
-        G.supplyCount[i] = 1;
-        while (j < treasure_map) {
-            G.supplyCount[j+1] = 0;
-            G.supplyCount[j] = 1;
-            if(zeroPiles > 2) {
-                expect = 1; //Game should be over
-            } else {
-                expect = 0; //Game should not be over
-            }
-        result = isGameOver(&G);
-        result = myCompare(expect, result);
-        printResult(result, param, zeroPiles);
-        if(result != 0) {
-            param = param3;
-            printResult(-1, param, j+1);
-            failCount++;
-        }
-        G.supplyCount[j+1] = 1;
-        j++;
-        }
-        if(i > 0) i--;
-        zeroPiles--;
-    }
-    
-    printSummary(failCount);
+	/////////////////////////////////////////////////////////////////////
+	// test an empty deck
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
 
-    return 0;
+	// set the handcount to 0
+	testG.deckCount[player] = 0;
+	refG.deckCount[player] = 0;
+
+	retValue = shuffle(player, &testG);
+
+	// assert that deckCount did not change
+	myAssert(testG.deckCount[player],
+	         refG.deckCount[player],
+		     "Shuffle with empty deck did not change deckCount");
+	// assert that shuffle returned -1
+	myAssert(retValue, -1, "Shuffle with empty deck returned -1");
+
+	//////////////////////////////////////////////////////////////////////
+	// test a deck with 1 card
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// set the handcount to 1
+	testG.deckCount[player] = 1;
+	refG.deckCount[player] = 1;
+
+	// set the 1 card to smithy
+	testG.deck[player][0] = smithy;
+	refG.deck[player][0] = smithy;
+
+	retValue = shuffle(player, &testG);
+
+	// assert that deckCount did not change
+	myAssert(testG.deckCount[player],
+			 refG.deckCount[player],
+			 "Shuffle with 1 card (smithy) deck did not change deckCount");
+	// assert that shuffle returned -1
+	myAssert(retValue, 0, "Shuffle with 1 card (smithy) deck returned 0");
+
+	//////////////////////////////////////////////////////////////////////
+	// test a deck with MAX_DECK cards
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// set the handcount to 1
+	testG.deckCount[player] = MAX_DECK;
+	refG.deckCount[player] = MAX_DECK;
+
+	// set the  cards to smithy
+	for (int i = 0; i < MAX_DECK; i++) {
+		testG.deck[player][i] = smithy;
+		refG.deck[player][i] = smithy;
+	}
+
+	retValue = shuffle(player, &testG);
+
+	// assert that deckCount did not change
+	myAssert(testG.deckCount[player],
+			 refG.deckCount[player],
+			 "Shuffle with MAX_DECK cards (smithy) deck did not change deckCount");
+	// assert that shuffle returned 0
+	myAssert(retValue, 0, "Shuffle with MAX_DECK cards (smithy) deck returned 0");
+
+	////////////////////////////////////////////////////////////////////
+	// test that shuffle changes card order
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	int sameOrder = 1;
+	int testEstates = 0;
+	int refEstates = 0;
+	int testCoppers = 0;
+	int refCoppers = 0;
+
+	retValue = shuffle(player, &testG);
+
+	// assert that shuffle returned 0
+	myAssert(retValue, 0, "Shuffle starting deck returned 0");
+
+	for (int i = 0; i < refG.deckCount[player]; i++) {
+		if (refG.deck[player][i] != testG.deck[player][i]) {
+			sameOrder = 0;
+		}
+		if (refG.deck[player][i] == 'estate') {
+			refEstates++;
+		}
+		if (testG.deck[player][i] == 'estate') {
+			testEstates++;
+		}
+		if (refG.deck[player][i] == 'copper') {
+			refCoppers++;
+		}
+		if (testG.deck[player][i] == 'copper') {
+			testCoppers++;
+		}
+	}
+
+	// assert that card counts did not change
+	myAssert(testCoppers, refCoppers, "Copper Card Count unchanged");
+	myAssert(testEstates, refEstates, "Estate Card Count unchanged");
+
+	// assert card order changed
+	myAssert(sameOrder, 0, "Card order changed after shuffle");
+}
+
+
+int
+main()
+{
+	testShuffle();
+	return 0;
 }

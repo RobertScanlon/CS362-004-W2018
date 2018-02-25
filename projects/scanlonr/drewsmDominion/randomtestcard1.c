@@ -1,158 +1,174 @@
-/*******************************************************************************
- * Author:                  Melvin Drews
- * Date Created:            2/18/2018
- * Last Modification Date:  2/18/2018
- * Overview: random test suite for the smithyEffect function in dominion.c
- *
- * Input: None
- * Output: Prints to stdout the PASS/FAIL status for each test along with 
- *          a diagnostic hint; additional debugging information if
- *          DEBUG is set to 1 in dominion.h
- * 
- *  Build this test with:
- *      make randomtestcard1
- ******************************************************************************/
+/*
+    Council Room
+    randomtestcard1.c
+*/
+#include "dominion.h"
+#include "dominion_helpers.h"
+#include "rngs.h"
+#include "myAssert.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
 
-#include "randTestCommon.h"
+#define NUMTESTS 10000
+#define MAX_BUGS 1
 
-int main() {
-    int runs, i, discardSize, deckSize, playedCards, lastPlayed;
-    int handSize, result, test1, handPos, val1, val2, val3;
-    int smithyCards1, smithyCards2;
-    int currentPlayer;
-    int failures = 0;
-    
-    //Tracking for current values
-    
-        
-    //Test result explanation strings
-    char *param1 = "pre-test handCount";
-    char *param2 = "smithy hand position";
-    char *param3 = "deck or discard reduced";
-    char *param4 = "deckCount";
-    char *param5 = "discardCount";
-    char *param6 = "played card count";
-    char *param7 = "lastPlayed should be 13, is";
-    char *param8 = "0 smithy cards trashed, is";
-    char param99[32];
-    char* param;
-    param = param99;
-    
-    //Setup the game state
-    struct gameState g;
-    struct gameState * game = &g;
-    
-    PlantSeeds(-1);
-    
-    //Run the test suite 1000 times
-    for(runs = 0; runs < 1000; runs++) {
-        memset(game,0,sizeof(struct gameState));
-        randGame(game);
+// global bug counts
+int pHandBug = 0;
+int oHandBug = 0;
+int buyBug = 0;
+int playedBug = 0;
+int returnBug = 0;
 
-        //Select a random player. This will test if the card effect works
-        //differently depending on player number
-        randPlayer(game);
-        
-        currentPlayer = game->whoseTurn;    //record the currentPlayer
+void printGameState(struct gameState *g)
+{
+    fprintf(stderr, "numPlayers:      %d\n", g->numPlayers);
+    fprintf(stderr, "whoseTurn:       %d\n", g->whoseTurn);
+    fprintf(stderr, "phase:           %d\n", g->phase);
+    fprintf(stderr, "numActions:      %d\n", g->numActions);
+    fprintf(stderr, "coins:           %d\n", g->coins);
+    fprintf(stderr, "numBuys:         %d\n", g->numBuys);
+    fprintf(stderr, "handCount:       %d\n", g->handCount[g->whoseTurn]);
+    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);
+    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);
+    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);
+}
 
-        //Randomize the cards in currentPlayer deck, using cards that are in play
-        randomizeCards(game, currentPlayer);
-        
-        //Check if smithy is already in currenPlayer hand
-        //If yes, handPos holds index of the first one found
-        handPos = findHandPos(game, smithy, currentPlayer);
-        if(handPos == -1) { //If smithy not found, add it into the hand
-            //choose a random hand position to insert smithy
-            handPos = getRandom(game->handCount[currentPlayer] - 1);
-            game->hand[currentPlayer][handPos] = smithy;
+int myRandom(int min, int max) {
+    return (rand() % (max - min + 1)) + min;
+}
+
+int councilRoomOracle(struct gameState *post)
+{
+    int retCode = 0;
+	int b = 0;
+    int retValue = 0;
+	int player = post->whoseTurn;
+	int handCntBefore = post->handCount[player];
+	int numBuysBefore = post->numBuys;
+	int playedCntBefore = post->playedCardCount;
+
+	int othersHandCnt[post->numPlayers];
+	for (int i = 0; i < post->numPlayers; i++) {
+		if (i != player) {
+			othersHandCnt[i] = post->handCount[i];
+		}
+	}
+
+	// execute card effect
+	retValue = cardEffect(council_room, 0, 0, 0, post, 0, &b);
+
+	int handCntAfter = post->handCount[player];
+	int numBuysAfter = post->numBuys;
+	int playedCntAfter = post->playedCardCount;
+
+	int othersHandCntAfter[post->numPlayers];
+	for (int i = 0; i < post->numPlayers; i++) {
+		if (i != player) {
+			othersHandCntAfter[i] = post->handCount[i];
+		}
+	}
+
+    // check that +4 cards drawn -1 card discarded
+    if (pHandBug < MAX_BUGS) {
+        if (myAssert(handCntBefore + 3, handCntAfter, "Council Room Player added 4 cards to players hand and Discards 1 from hand", 1) != 0) {
+            pHandBug++;
+            retCode = -1;
         }
-        
-        //Track variables needed to evaluate resulting conditions
-        handSize = game->handCount[currentPlayer];
-        discardSize = game->discardCount[currentPlayer];
-        deckSize = game->deckCount[currentPlayer];
-        playedCards = game->playedCardCount;
-        lastPlayed = game->playedCards[currentPlayer];
-        //Count total smithy cards in the game;
-        smithyCards1 = game->supplyCount[smithy];
-        smithyCards2 = 0;
-        for(i = 0; i < game->handCount[currentPlayer]; i++) {
-            if(game->hand[currentPlayer][i] == smithy) smithyCards1++;
+    }
+
+    // check that players buy is incremented by 1
+    if (buyBug < MAX_BUGS) {
+        if (myAssert(numBuysBefore + 1, numBuysAfter, "Council Room Player added +1 Buy", 1) != 0) {
+            buyBug++;
+            retCode = -1;
         }
-        for(i = 0; i < game->deckCount[currentPlayer]; i++) {
-            if(game->deck[currentPlayer][i] == smithy) smithyCards1++;
+    }
+
+    // played card count increases by one after execution
+    if (playedBug < MAX_BUGS) {
+        if (myAssert(playedCntBefore + 1, playedCntAfter, "Council Room Player added 1 card to Played Cards", 1) != 0) {
+            playedBug++;
+            retCode = -1;
         }
-        for(i = 0; i < game->discardCount[currentPlayer]; i++) {
-            if(game->discard[currentPlayer][i] == smithy) smithyCards1++;
-        }
-        if(game->playedCards[game->playedCardCount] == smithy) smithyCards1++;
-        
-        result = smithyEffect(game, handPos, currentPlayer);
-        
-        /* Test conditions:
-         * Condition 1: 3 additional cards are added to currentPlayer hand.
-         * Condition 2: 3 cards removed from the total number of cards in
-         *              deckCount + discardCount.
-         * Condition 3: Smithy is added to the playedCards pile
-         */
-        //Condition 1 true?
-        memset(param99, 0, sizeof param99);
-        test1 = myCompare((handSize + 2), game->handCount[currentPlayer]);
-        sprintf(param99, "%s", param1);
-        printResult(test1, param, handSize);
-        if(test1) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            sprintf(param99, "%s", param2);
-            printResult(2, param, handPos);
-        }
-        
-        //Condition 2 true?
-        val1 = game->deckCount[currentPlayer];
-        val2 = game->discardCount[currentPlayer];
-        val3 = val1 + val2;
-        memset(param99, 0, sizeof param99);
-        test1 = myCompare((deckSize + discardSize - 3), val3);
-        sprintf(param99, "%s", param3);
-        printResult(test1, param, (deckSize + discardSize - val3));
-        if(test1) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            sprintf(param99, "%s = %i, %s", param4, val1, param5);
-            printResult(2, param, val2);
-        }
-        
-        //Condition 3 true?
-        //Are the number of cards & last card played both correct?
-        val1 = myCompare(game->playedCardCount, (playedCards + 1));
-        val2 = myCompare(lastPlayed, game->playedCards[currentPlayer]);
-        memset(param99, 0, sizeof param99);
-        sprintf(param99, "%s", param6);
-        printResult(val1, param, game->playedCardCount);
-        smithyCards2 = game->supplyCount[smithy];
-        for(i = 0; i < game->handCount[currentPlayer]; i++) {
-            if(game->hand[currentPlayer][i] == smithy) smithyCards2++;
-        }
-        for(i = 0; i < game->deckCount[currentPlayer]; i++) {
-            if(game->deck[currentPlayer][i] == smithy) smithyCards2++;
-        }
-        for(i = 0; i < game->discardCount[currentPlayer]; i++) {
-            if(game->discard[currentPlayer][i] == smithy) smithyCards2++;
-        }
-        if(game->playedCards[game->playedCardCount] == smithy) smithyCards2++;
-        val3 = myCompare(smithyCards1, smithyCards2);
-        if(val1 || val2) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            sprintf(param99, "%s", param7);
-            printResult(2, param, game->playedCards[currentPlayer]);
-            if(val3) {
-                memset(param99, 0, sizeof param99);
-                sprintf(param99, "%s", param8);
-                printResult(2, param, (smithyCards1 - smithyCards2));
+    }
+
+    // check that all other players gain a card
+    if (oHandBug < (MAX_BUGS * post->numPlayers)) {
+        for (int i = 0; i < post->numPlayers; i++) {
+            if (i != player) {
+                if (myAssert(othersHandCnt[i] + 1, othersHandCntAfter[i], "Council Room Other Player added 1 card to hand", 1) != 0) {
+                    oHandBug++;
+                    retCode = -1;
+                }
             }
         }
     }
-    printSummary(failures);
-    return 0;
+
+    // check that card effect returns 0 when council_room played
+    if (returnBug < MAX_BUGS) {
+        if (myAssert(0, retValue, "cardEffect returns 0 when Council Room is played", 1) != 0) {
+            returnBug++;
+            retCode = -1;
+        }
+    }
+
+    return retCode;
+}
+
+void CouncilRoomRandomTester()
+{
+	fprintf(stderr, "BEGIN COUNCIL ROOM RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
+    int itr = 0;
+    int bugCount = 0;
+	srand(time(NULL));
+	int seed = 1;
+	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+			 sea_hag, tribute, smithy, council_room};
+
+    // create a unique gamestate for each random test
+    for (int i = 0; i < NUMTESTS; i++ ) {
+        struct gameState *G = malloc(sizeof(struct gameState));
+        int numPlay = myRandom(2, MAX_PLAYERS);
+        initializeGame(numPlay, k, 2, G);
+        itr++;
+
+        // make current number of buys a 'reasonable' number
+        // including boundary case of 0
+		G->numBuys = myRandom(0, 100);
+		for (int j = 0; j < MAX_PLAYERS; j++) {
+
+            // MAX_DECK - 4 is max to avoid overflow
+			G->handCount[j] = myRandom(1, MAX_HAND - 4);
+			G->deckCount[j] = myRandom(0, MAX_DECK);
+
+            // min of 10 in case dekc is empty we still want to be
+            // able to draw cards
+			G->discardCount[j] = myRandom(10, MAX_DECK);
+
+            // 'reasonable' played card count
+            G->playedCardCount = myRandom(0, 100);
+		}
+
+		if (councilRoomOracle(G) != 0) {
+            printGameState(G);
+            bugCount++;
+        }
+        free(G);
+	}
+
+	fprintf(stderr, "END COUNCIL ROOM RANDOM TESTER %d ITERATIONS\n", itr);
+    if (bugCount == 0) {
+        fprintf(stderr, "ALL TESTS PASSED\n");
+    } else {
+        fprintf(stderr, "TESTING FOUND AT LEAST %d BUGS\n", bugCount);
+    }
+}
+
+int
+main()
+{
+	CouncilRoomRandomTester();
+	return 0;
 }

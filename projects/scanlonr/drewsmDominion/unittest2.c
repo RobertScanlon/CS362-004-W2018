@@ -1,109 +1,185 @@
-/*******************************************************************************
- * Author:                  Melvin Drews
- * Date Created:            2/3/2018
- * Last Modification Date:  2/4/2018
- * Overview: Unit test for the fullDeckCount function in dominion.c
- *
- * Input: None
- * Output: Prints to stdout the PASS/FAIL status for each test along with 
- *          a diagnostic hint
- * 
- *  Based on the testUpdateCoins.c code template provided as part of OSU CS362
- *  
- *  Build this test with:
- *      make test2
- ******************************************************************************/
-
+/*
+ * unit test 2 fullDeckCount()
+ */
 #include "dominion.h"
 #include "dominion_helpers.h"
-#include "unitTestCommon.h"
-#include <string.h>
+#include "rngs.h"
+#include "myAssert.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-int main() {
-    int handCards, deckCards, discardCards, player, card, expect, result;
-    int failCount = 0;
-    char* param1 = "hand count of card number";
-    char* param2 = "deck count of card number";
-    char* param3 = "discard count of card number";
-    char* param4 = "hand count";
-    char* param5 = "deck count";
-    char* param6 = "discard count";
-    char* param;
-    struct gameState G;
+void testFullDeckCount()
+{
+	int player = 0;
+	int card = smithy;
+	struct gameState testG;
+	struct gameState refG;
+	int retValue = -5;
+	int seed = 1;
+	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+			     sea_hag, tribute, smithy, council_room};
 
-    printf ("TESTING fullDeckCount():\n\n");
-    
-    //Run the test for each card type and for each of 2 players
-    for(player = 0; player < 2; player++) {
-        //Test for each possible card
-        for(card = curse; card <= treasure_map; card++) {
-            memset(&G, 23, sizeof(struct gameState));   // clear the game state
-            G.handCount[player] = 0;
-            //Add target card to the player's hand
-            for(handCards = 0; handCards < 6; handCards++) {
-                //Clear deckCards and discardCards before each run
-                for(deckCards = 0; deckCards < 6; deckCards++) {
-                    G.deck[player][deckCards] = -1;
-                    for(discardCards = 0; discardCards < 6; discardCards++) {
-                        G.discard[player][discardCards] = -1;
-                    }
-                }
-                deckCards = 0;
-                discardCards = 0;
-                G.deckCount[player] = 0;
-                G.discardCount[player] = 0;
-                expect = handCards + deckCards + discardCards;
-                //Test the constructed deck against fullDeckCount()
-                result = fullDeckCount(player, card, &G);
-                result = myCompare(expect, result);
-                if(result != 0) failCount++;
-                param = param1;
-                printResult(result, param, card);        
-                
-                //Add target card to the player's deck
-                for(deckCards = 0; deckCards < 6; deckCards++) {
-                    //Clear discardCards before each run
-                    for(discardCards = 0; discardCards < 6; discardCards++) {
-                        G.discard[player][discardCards] = -1;
-                    }
-                    G.discardCount[player] = 0;
-                    discardCards = 0;
-                    
-                    expect = handCards + deckCards + discardCards;
-                    //Test the constructed deck against fullDeckCount()
-                    result = fullDeckCount(player, card, &G);
-                    result = myCompare(expect, result);
-                    if(result != 0) failCount++;
-                    param = param2;
-                    printResult(result, param, card);
-                    
-                    //Add target card to the player's discard pile
-                    for(discardCards = 0; discardCards < 6; discardCards++) {
-                        expect = handCards + deckCards + discardCards;
-                        //Test the constructed deck against fullDeckCount()
-                        result = fullDeckCount(player, card, &G);
-                        result = myCompare(expect, result);
-                        if(result != 0) failCount++;
-                        param = param3;
-                        printResult(result, param, card);
-                        
-                        //Add the card to the player's discard pile
-                        G.discard[player][discardCards] = card;
-                        G.discardCount[player]++;
-                    }
-                    //Add the card to the player's deck
-                    G.deck[player][deckCards] = card;
-                    G.deckCount[player]++;
-                }
-                //Add the card to the player's hand
-                G.hand[player][handCards] = card;
-                G.handCount[player]++;
-            } 
-        }
-    }
-    
-    printSummary(failCount);
+	/////////////////////////////////////////////////////////////////////
+	// test an empty deck hand and discard
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
 
-    return 0;
+	// set all to 0
+	testG.deckCount[player] = 0;
+	refG.deckCount[player] = 0;
+	testG.handCount[player] = 0;
+	refG.handCount[player] = 0;
+	testG.discardCount[player] = 0;
+	refG.discardCount[player] = 0;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 0, "Empty Deck, Hand, Discard, returns 0 smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = 1
+	// hand = 0
+	// discard = 0
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// just one smithy in deck
+	testG.deckCount[player] = 1;
+	testG.deck[player][0] = smithy;
+	refG.deckCount[player] = 1;
+	refG.deck[player][0] = smithy;
+	testG.handCount[player] = 0;
+	refG.handCount[player] = 0;
+	testG.discardCount[player] = 0;
+	refG.discardCount[player] = 0;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 1, "1 smithy in deck, returns 1 smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = 0
+	// hand = 1
+	// discard = 0
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// just one smithy in hand
+	testG.deckCount[player] = 0;
+	testG.hand[player][0] = smithy;
+	refG.deckCount[player] = 0;
+	refG.hand[player][0] = smithy;
+	testG.handCount[player] = 1;
+	refG.handCount[player] = 1;
+	testG.discardCount[player] = 0;
+	refG.discardCount[player] = 0;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 1, "1 smithy in hand, returns 1 smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = 0
+	// hand = 0
+	// discard = 1
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// just one smithy in hand
+	testG.deckCount[player] = 0;
+	testG.discard[player][0] = smithy;
+	refG.deckCount[player] = 0;
+	refG.discard[player][0] = smithy;
+	testG.handCount[player] = 0;
+	refG.handCount[player] = 0;
+	testG.discardCount[player] = 1;
+	refG.discardCount[player] = 1;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 1, "1 smithy in discard, returns 1 smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = 1
+	// hand = 1
+	// discard = 1
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	// just one smithy in hand
+	testG.deckCount[player] = 1;
+	testG.discard[player][0] = smithy;
+	refG.deckCount[player] = 1;
+	refG.discard[player][0] = smithy;
+	testG.handCount[player] = 1;
+	testG.hand[player][0] = smithy;
+	refG.handCount[player] = 1;
+	refG.hand[player][0] = smithy;
+	testG.discardCount[player] = 1;
+	refG.discardCount[player] = 1;
+	testG.deck[player][0] = smithy;
+	refG.deck[player][0] = smithy;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 3, "1 smithy in discard, deck, hand, returns 3 smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = MAX_DECK
+	// hand = MAX_DECK
+	// discard = MAX_DECK
+	initializeGame(2, k, seed, &refG);
+	memcpy(&testG, &refG, sizeof(struct gameState));
+
+	for (int i = 0; i < MAX_DECK; i++) {
+		testG.deck[player][i] = smithy;
+		refG.deck[player][i] = smithy;
+		testG.hand[player][i] = smithy;
+		refG.hand[player][i] = smithy;
+		testG.discard[player][i] = smithy;
+		refG.discard[player][i] = smithy;
+	}
+	testG.deckCount[player] = MAX_DECK;
+	testG.handCount[player] = MAX_DECK;
+	testG.discardCount[player] = MAX_DECK;
+	refG.deckCount[player] = MAX_DECK;
+	refG.handCount[player] = MAX_DECK;
+	refG.discardCount[player] = MAX_DECK;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, (MAX_DECK * 3), "Total of 3x MAX_DECK smithies");
+
+	/////////////////////////////////////////////////////////////////////
+	// deck = 5 smithy, 5 adventurer
+	// hand = 5 smithy, 5 adventurer
+	// discard = 5 smithy, 5 adventurer
+	initializeGame(2, k, seed, &refG);
+
+	for (int i = 0; i < 10; i++) {
+		if (i < 5) {
+			testG.deck[player][i] = smithy;
+			testG.hand[player][i] = smithy;
+			testG.discard[player][i] = smithy;
+		} else {
+			testG.deck[player][i] = adventurer;
+			testG.hand[player][i] = adventurer;
+			testG.discard[player][i] = adventurer;
+		}
+	}
+	testG.deckCount[player] = 10;
+	testG.handCount[player] = 10;
+	testG.discardCount[player] = 10;
+
+	retValue = fullDeckCount(player, card, &testG);
+
+	myAssert(retValue, 15, "Total of 15 smithies");
+}
+
+int
+main()
+{
+	testFullDeckCount();
+	return 0;
 }

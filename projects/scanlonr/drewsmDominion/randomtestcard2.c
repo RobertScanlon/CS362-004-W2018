@@ -1,184 +1,147 @@
-/*******************************************************************************
- * Author:                  Melvin Drews
- * Date Created:            2/18/2018
- * Last Modification Date:  2/18/2018
- * Overview: random test suite for the embargoEffect function in dominion.c
- *
- * Input: None
- * Output: Prints to stdout the PASS/FAIL status for each test along with 
- *          a diagnostic hint; additional debugging information if
- *          DEBUG is set to 1 in dominion.h
- * 
- *  Build this test with:
- *      make randomtestcard2
- ******************************************************************************/
+/*
+    Steward Card
+    randomtestcard2.c
+*/
+#include "dominion.h"
+#include "dominion_helpers.h"
+#include "rngs.h"
+#include "myAssert.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
 
-#include "randTestCommon.h"
+#define NUMTESTS 10000
+#define MAX_BUGS 1
 
-int main() {
-    int runs, result, i, j, choice, inPlay, test1, handPos, val1;
-    int coinCount;
-    int embargoCards1, embargoCards2;   //pre and post-execution of card effect
-    int eTokens = 0;
-    int currentPlayer;
-    int failures = 0;
-    
-    //Tracking for current values
-    
-        
-    //Test result explanation strings
-    char *param1 = "coin count";
-    char *param2 = "embargo cards trashed";
-    char *param3 = "embargo tokens";
-    char *param4 = "embargo added to unused supply";
-    char param99[32];
-    char* param;
-    param = param99;
-    
-    //Setup the game state
-    struct gameState g;
-    struct gameState * game = &g;
-    
-    PlantSeeds(-1);
-    
-    /* Run the test suite 5000 times. We need more test runs for this test
-     * because of the high max number of embargo supply cards set for
-     * randomness.
-     */
-    for(runs = 0; runs < 5000; runs++) {
-        memset(game,0,sizeof(struct gameState));
-        randGame(game);
+int handCountBug = 0;
+int coinCountBug = 0;
+int returnBug = 0;
 
-        //Select a random player. This will test if the card effect works
-        //differently depending on player number
-        randPlayer(game);
-        
-        currentPlayer = game->whoseTurn;    //record the currentPlayer
+void printGameState(struct gameState *g)
+{
+    fprintf(stderr, "numPlayers:      %d\n", g->numPlayers);
+    fprintf(stderr, "whoseTurn:       %d\n", g->whoseTurn);
+    fprintf(stderr, "phase:           %d\n", g->phase);
+    fprintf(stderr, "numActions:      %d\n", g->numActions);
+    fprintf(stderr, "coins:           %d\n", g->coins);
+    fprintf(stderr, "numBuys:         %d\n", g->numBuys);
+    fprintf(stderr, "handCount:       %d\n", g->handCount[g->whoseTurn]);
+    fprintf(stderr, "deckCount:       %d\n", g->deckCount[g->whoseTurn]);
+    fprintf(stderr, "discardCount:    %d\n", g->discardCount[g->whoseTurn]);
+    fprintf(stderr, "playedCardCount: %d\n", g->playedCardCount);
+}
 
-        //Randomize cards in currentPlayer deck using cards that are in play
-        randomizeCards(game, currentPlayer);
-        
-        //Check if embargo is already in currenPlayer hand
-        //If yes, handPos holds index of the first one found
-        handPos = findHandPos(game, embargo, currentPlayer);
-        if(handPos == -1) { //If embargo not found, add it into the hand
-            //choose a random hand position to insert smithy
-            handPos = getRandom(game->handCount[currentPlayer] - 1);
-            game->hand[currentPlayer][handPos] = embargo;
-        }
-        //set a random number of coins for the currentPlayer
-        game->coins = getRandom(100);
-        //set a random number of embargo cards in the supply pile
-        game->supplyCount[embargo] = getRandom(MAX_DECK);
-        
-        //Track variables needed to evaluate resulting conditions
-        coinCount = game->coins;
-        //Count embargo cards in use in the game
-        embargoCards1 = game->supplyCount[embargo];
-        for(i = 0; i < game->numPlayers; i++) {
-            for(j = 0; j < game->deckCount[i]; j++) {
-                if(game->deck[i][j] == embargo) embargoCards1++;
-            }
-            for(j = 0; j < game->discardCount[i]; j++) {
-                if(game->discard[i][j] == embargo) embargoCards1++;
-            }
-            for(j = 0; j < game->handCount[i]; j++) {
-                if(game->hand[i][j] == embargo) embargoCards1++;
+int myRandom(int min, int max) {
+    return (rand() % (max - min + 1)) + min;
+}
+
+int StewardRoomOracle(struct gameState *post, int choice1, int p)
+{
+	int b = 0;
+    int retCode = 0;
+    int handCountBefore = post->handCount[p];
+    int coinsBefore = post->coins;
+
+	int retValue = cardEffect(steward, choice1, 0, 0, post, 0, &b);
+
+    int handCountAfter = post->handCount[p];
+    int coinsAfter = post->coins;
+
+    // when choice is 1 check that 2 cards drawn, played card discarded
+    if (choice1 == 1) {
+        if (handCountBug < MAX_BUGS) {
+            if (myAssert(handCountBefore + 1, handCountAfter, "+2 cards drawn, played card discarded", 1) != 0) {
+                handCountBug++;
+                retCode = -1;
             }
         }
-        for(i = 0; i < game->playedCardCount; i++) {
-            if(game->playedCards[i] == embargo) embargoCards1++;
-        }
-        
-        choice = getRandom(treasure_map);  //The supply to put embargo token on
-        
-        //Test if the chosen supply is in play
-        if(game->supplyCount[choice] > 0) {
-            inPlay = 1;
-        } else {
-            inPlay = 0;
-        }
-        if(inPlay) {
-            //Set a random number of embargo tokens on the chosen supply
-            eTokens = getRandom(10);
-            game->embargoTokens[choice] = eTokens;
-        }
-        
-        result = embargoEffect(choice, game, handPos, currentPlayer);
-        
-        /* Test conditions:
-         * Condition 1: Player received two coins
-         * Condition 2: The Embargo card is trashed (removed from play)
-         * Condition 3: Embargo token is added to the specified supply pile
-         *              only if the supply is in play
-         */
-        //Condition 1 true?
-        memset(param99, 0, sizeof param99);
-        test1 = myCompare((coinCount + 2), game->coins);
-        sprintf(param99, "%s", param1);
-        printResult(test1, param, game->coins);
-        if(test1) {
-            failures++;
-            printResult(2, param, (coinCount + 2));
-        }
-        
-        //Condition 2 true?
-        //Count embargo cards currently in use in the game
-        embargoCards2 = game->supplyCount[embargo];
-        for(i = 0; i < game->numPlayers; i++) {
-            for(j = 0; j < game->deckCount[i]; j++) {
-                if(game->deck[i][j] == embargo) embargoCards2++;
-            }
-            for(j = 0; j < game->discardCount[i]; j++) {
-                if(game->discard[i][j] == embargo) embargoCards2++;
-            }
-            for(j = 0; j < game->handCount[i]; j++) {
-                if(game->hand[i][j] == embargo) embargoCards2++;
+
+    // when choice is 2, check that +2 coins and played card discarded
+    } else if (choice1 == 2) {
+        if (coinCountBug < MAX_BUGS) {
+            if (myAssert(coinsBefore + 2, coinsAfter, "+2 coins", 1) != 0) {
+                coinCountBug++;
+                retCode = -1;
             }
         }
-        for(i = 0; i < game->playedCardCount; i++) {
-            if(game->playedCards[i] == embargo) embargoCards2++;
-        }
-        memset(param99, 0, sizeof param99);
-        if(inPlay) {
-            test1 = myCompare((embargoCards1 - 1), embargoCards2);
-        } else {
-            test1 = myCompare(embargoCards1, embargoCards2);
-        }
-        sprintf(param99, "%s", param2);
-        printResult(test1, param, (embargoCards1 - embargoCards2));
-        if(test1) {
-            failures++;
-            memset(param99, 0, sizeof param99);
-            if(inPlay) {
-                val1 = 1;
-            } else {
-                val1 = 0;
+        if (handCountBug < MAX_BUGS) {
+            if (myAssert(handCountBefore, handCountAfter + 1, "played card discarded", 1) != 0) {
+                handCountBug++;
+                retCode = -1;
             }
-            printResult(2, param, val1);
         }
-        
-        //Condition 3 true?
-        //Is the embargo token count correct on the chosen supply pile?
-        memset(param99, 0, sizeof param99);
-        sprintf(param99, "%s", param3);
-        if(inPlay) {
-            test1 = myCompare((eTokens + 1), game->embargoTokens[choice]);
-        } else {
-            test1 = myCompare(0, game->embargoTokens[choice]);
-        }
-        printResult(test1, param, game->embargoTokens[choice]);
-        if(test1) {
-            failures++;
-            if(inPlay) {
-                printResult(2, param, (eTokens + 1));
-            } else {
-                memset(param99, 0, sizeof param99);
-                sprintf(param99, "%s", param4);
-                printResult(2, param, 0);
+
+    // if any other choice value, check that total of 3 cards removed from hand
+    } else {
+        if (handCountBug < MAX_BUGS) {
+            if (myAssert(handCountBefore, handCountAfter + 3, "played card discarded, 2 cards trashed", 1) != 0) {
+                handCountBug++;
+                retCode = -1;
             }
         }
     }
-    printSummary(failures);
-    return 0;
+
+    // check that card effect returns 0 when steward is played
+    if (returnBug < MAX_BUGS) {
+        if (myAssert(0, retValue, "cardEffect returns 0 when Steward is played", 1) != 0) {
+            returnBug++;
+            retCode = -1;
+        }
+    }
+
+    return retCode;
+}
+
+void StewardRoomRandomTester()
+{
+    int bugCount = 0;
+	fprintf(stderr, "BEGIN STEWARD RANDOM TESTER %d ITERATIONS\n", NUMTESTS);
+	struct gameState *G = malloc(sizeof(struct gameState));
+	srand(time(NULL));
+	int seed = 1;
+	int itr = 0;
+	int choice1;
+	int p = 0;
+	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
+			 sea_hag, tribute, smithy, council_room};
+
+    // create random gamestate for each test run
+	for (int i = 0; i < NUMTESTS; i++ ) {
+		struct gameState *G = malloc(sizeof(struct gameState));
+		itr++;
+		initializeGame(2, k, 2, G);
+
+        // max MAX_HAND - 2 to allow for up to 2 cards drawn
+		G->handCount[p] = myRandom(1, MAX_HAND - 2);
+		G->deckCount[p] = myRandom(0, MAX_DECK);
+
+        // min 5 so we don't end up with empty deck and discard
+		G->discardCount[p] = myRandom(5, MAX_DECK - 1);
+
+        // choice can be 0, 1, 2, or 3
+        choice1 = myRandom(0, 3);
+
+        // 'reasonable' coin values
+        G->coins = myRandom(0, 100);
+
+        if (StewardRoomOracle(G, choice1, p) != 0) {
+            bugCount++;
+        }
+		free(G);
+	}
+
+	fprintf(stderr, "END STEWARD RANDOM TESTER %d ITERATIONS\n", itr);
+    if (bugCount == 0) {
+        fprintf(stderr, "ALL TESTS PASSED\n");
+    } else {
+        fprintf(stderr, "TESTING FOUND AT LEAST %d BUGS\n", bugCount);
+    }
+}
+
+int
+main()
+{
+	StewardRoomRandomTester();
+	return 0;
 }
