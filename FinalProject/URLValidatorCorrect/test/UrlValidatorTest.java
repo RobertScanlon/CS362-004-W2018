@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,7 +42,7 @@ protected void setUp() {
       }
    }
 
-   public void testIsValid() {
+   public void testIsValid() throws FileNotFoundException, UnsupportedEncodingException {
         testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);
         setUp();
 //        int options =
@@ -79,12 +83,21 @@ protected void setUp() {
     * running through all possible permutations of their combinations.
     *
     * @param testObjects Used to create a url.
+ * @throws UnsupportedEncodingException 
+ * @throws FileNotFoundException 
     */
-   public void testIsValid(Object[] testObjects, long allowAllSchemes) {
+   public void testIsValid(Object[] testObjects, long allowAllSchemes) throws FileNotFoundException, UnsupportedEncodingException {
+	   	PrintWriter goodFile = new PrintWriter("./goodUrls.txt", "UTF-8");
+		PrintWriter badFile = new PrintWriter("./badUrls.txt", "UTF-8");
+		PrintWriter numFile = new PrintWriter("./numUrls.txt", "UTF-8");
+
+	   int numTests = 0;
 	      UrlValidator urlVal = new UrlValidator(null, null, allowAllSchemes);
 	      //UrlValidator urlVal = new UrlValidator(null, allowAllSchemes);
       assertTrue(urlVal.isValid("http://www.google.com"));
+      numTests++;
       assertTrue(urlVal.isValid("http://www.google.com/"));
+      numTests++;
       int statusPerLine = 60;
       int printed = 0;
       if (printIndex)  {
@@ -101,8 +114,13 @@ protected void setUp() {
          }
          String url = testBuffer.toString();
          boolean result = urlVal.isValid(url);
-         if(result == true)
-        	 System.out.println(url);
+         numTests++;
+         if(result == true) {
+        	 	System.out.println(url);
+        	 	goodFile.println(url);
+         } else {
+        	 	badFile.println(url);
+         }
          assertEquals(url, expected, result);
          if (printStatus) {
             if (printIndex) {
@@ -124,6 +142,11 @@ protected void setUp() {
       if (printStatus) {
          System.out.println();
       }
+      
+      numFile.println(numTests);
+      goodFile.close();
+      badFile.close();
+      numFile.close();
    }
 
    public void testValidator202() {
@@ -182,8 +205,10 @@ protected void setUp() {
    /**
     * Only used to debug the unit tests.
     * @param argv
+ * @throws UnsupportedEncodingException 
+ * @throws FileNotFoundException 
     */
-   public static void main(String[] argv) {
+   public static void main(String[] argv) throws FileNotFoundException, UnsupportedEncodingException {
 
 	   UrlValidatorTest fct = new UrlValidatorTest("url test");
       fct.setUp();
