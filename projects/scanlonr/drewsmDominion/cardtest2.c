@@ -51,10 +51,11 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
-	myAssert(retValue, 0, "Play adventurer returns 0");
+	myAssert(retValue, 0, "Play adventurer returns 0", 0);
 
 	// assert that num coppers in hand increase by 2
 	refcoppers = 0;
@@ -69,8 +70,8 @@ void testAdventurer()
 			testcoppers++;
 		}
 	}
-	myAssert(testcoppers, refcoppers + 2, "Playing adventurer inceases num coppers in hand by 2, when only 2 coppers in discard");
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards");
+	myAssert(testcoppers, refcoppers + 2, "Playing adventurer inceases num coppers in hand by 2, when only 2 coppers in discard", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards", 0);
 
 	// test for when player has empty deck
 	// and discard contains 2 silver
@@ -90,10 +91,11 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
-	myAssert(retValue, 0, "Play adventurer returns 0");
+	myAssert(retValue, 0, "Play adventurer returns 0", 0);
 
 	// assert that num silvers in hand increase by 2
 	refsilvers = 0;
@@ -108,8 +110,8 @@ void testAdventurer()
 			testsilvers++;
 		}
 	}
-	myAssert(testsilvers, refsilvers + 2, "Playing adventurer inceases num silvers in hand by 2, when only 2 silvers in discard");
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards");
+	myAssert(testsilvers, refsilvers + 2, "Playing adventurer inceases num silvers in hand by 2, when only 2 silvers in discard", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards", 0);
 
 	// test for when player has empty deck
 	// and discard contains 2 gold
@@ -129,10 +131,11 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
-	myAssert(retValue, 0, "Play adventurer returns 0");
+	myAssert(retValue, 0, "Play adventurer returns 0", 0);
 
 	// assert that num golds in hand increase by 2
 	refgolds = 0;
@@ -147,8 +150,8 @@ void testAdventurer()
 			testgolds++;
 		}
 	}
-	myAssert(testgolds, refgolds + 2, "Playing adventurer inceases num golds in hand by 2, when only 2 golds in discard");
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards");
+	myAssert(testgolds, refgolds + 2, "Playing adventurer inceases num golds in hand by 2, when only 2 golds in discard", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards", 0);
 
 	// test when player deck has copper, siler, gold
 	initializeGame(2, k, seed, &refG);
@@ -167,10 +170,11 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
-	myAssert(retValue, 0, "Play adventurer returns 0");
+	myAssert(retValue, 0, "Play adventurer returns 0", 0);
 
 	// assert that num golds in hand increase by 0
 	refgolds = 0;
@@ -211,10 +215,10 @@ void testAdventurer()
 			testcoppers++;
 		}
 	}
-	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper]");
-	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper]");
-	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper]");
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards");
+	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper]", 0);
+	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper]", 0);
+	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper]", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards", 0);
 
 	// test when player deck has smithy, copper, siler, gold
 	initializeGame(2, k, seed, &refG);
@@ -235,10 +239,11 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
-	myAssert(retValue, 0, "Play adventurer returns 0");
+	myAssert(retValue, 0, "Play adventurer returns 0", 0);
 
 	// assert that num golds in hand increase by 0
 	refgolds = 0;
@@ -279,12 +284,12 @@ void testAdventurer()
 			testcoppers++;
 		}
 	}
-	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]");
-	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]");
-	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]");
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards, smithy");
+	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]", 0);
+	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]", 0);
+	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards, smithy", 0);
 	// discard count should increase by one, bc a smithy was pulled from deck
-	myAssert(testG.discardCount[player], refG.discardCount[player] + 1, "Discard count should increase by 1, as the drawn smithy should be discarded");
+	myAssert(testG.discardCount[player], refG.discardCount[player] + 1, "Discard count should increase by 1, as the drawn smithy should be discarded", 0);
 	int testSmithies = 0;
 	int refSmithies = 0;
 	for (int i = 0; i < refG.handCount[player]; i++) {
@@ -297,12 +302,14 @@ void testAdventurer()
 			testSmithies++;
 		}
 	}
-	myAssert(testSmithies, refSmithies, "Num of smithies in hand should remain unchanged");
+	myAssert(testSmithies, refSmithies, "Num of smithies in hand should remain unchanged", 0);
 }
 
 int
 main()
 {
+	fprintf(stderr, "BEGIN CARDTEST 2 Adventurer\n");
 	testAdventurer();
+	fprintf(stderr, "END CARDTEST 2 Adventurer\n");
 	return 0;
 }

@@ -43,7 +43,8 @@ int StewardRoomOracle(struct gameState *post, int choice1, int p)
     int handCountBefore = post->handCount[p];
     int coinsBefore = post->coins;
 
-	int retValue = cardEffect(steward, choice1, 0, 0, post, 0, &b);
+	//int retValue = cardEffect(steward, choice1, 0, 0, post, 0, &b);
+    int retValue = stewardEffect(choice1, 0, 0, post, 0, p);
 
     int handCountAfter = post->handCount[p];
     int coinsAfter = post->coins;

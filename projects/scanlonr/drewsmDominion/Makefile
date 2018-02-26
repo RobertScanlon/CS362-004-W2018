@@ -67,96 +67,77 @@ randomtestcard2.out: dominion.o myAssert.o
 	cat dominion.c.gcov >> randomtestcard2.out 2>&1
 	echo -e "\nEND COVERAGE RESULTS\n" >> randomtestcard2.out 2>&1
 
-unittestresults.out: dominion.o myAssert.o
-	echo -e  "**********************************************************************" > unittestresults.out 2>&1
-	echo -e  "******************* BEGIN UNITTEST1 shuffle() function ***************" >> unittestresults.out 2>&1
+unittest1results.out: dominion.o myAssert.o
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest1 unittest1.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./unitTest1 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END UNITTEST1 shuffle() function *****************" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN UNITTEST2 fullDeckCount() function *********" >> unittestresults.out 2>&1
+	./unitTest1 >> unittest1results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> unittest1results.out 2>&1
+	gcov -bfu dominion.c >> unittest1results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> unittest1results.out 2>&1
+
+unittest2results.out: dominion.o myAssert.o
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest2 unittest2.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./unitTest2 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END UNITTEST2 fullDeckCount() function ***********" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN UNITTEST3 updateCoins() function ***********" >> unittestresults.out 2>&1
+	./unitTest2 >> unittest2results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> unittest2results.out 2>&1
+	gcov -bfu dominion.c >> unittest2results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> unittest2results.out 2>&1
+
+unittest3results.out: dominion.o myAssert.o
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest3 unittest3.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./unitTest3 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END UNITTEST3 updateCoins() function *************" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN UNITTEST4 compare() function ***************" >> unittestresults.out 2>&1
+	./unitTest3 >> unittest3results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> unittest3results.out 2>&1
+	gcov -bfu dominion.c >> unittest3results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> unittest3results.out 2>&1
+
+unittest4results.out: dominion.o myAssert.o
 	rm -f *.gcov *.gcda *.gcno
 	gcc -c dominion.c -g  $(CFLAGS)
 	gcc -o unitTest4 unittest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./unitTest4 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END UNITTEST4 compare() function *****************" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN CARDTEST1 smithy implementation ************" >> unittestresults.out 2>&1
-	rm -f *.gcov *.gcda *.gcno
-	gcc -c dominion.c -g  $(CFLAGS)
-	gcc -o cardTest1 cardtest1.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./cardTest1 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END CARDTEST1 smithy implementation **************" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN CARDTEST2 adventurer implementation ********" >> unittestresults.out 2>&1
-	rm -f *.gcov *.gcda *.gcno
-	gcc -c dominion.c -g  $(CFLAGS)
-	gcc -o cardTest2 cardtest2.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./cardTest2 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END CARDTEST2 adventurer implementation **********" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN CARDTEST3 great hall implementation ********" >> unittestresults.out 2>&1
-	rm -f *.gcov *.gcda *.gcno
-	gcc -c dominion.c -g  $(CFLAGS)
-	gcc -o cardTest3 cardtest3.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./cardTest3 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END CARDTEST3 great hall implementation **********" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************" >> unittestresults.out 2>&1
-	echo -e  "******************* BEGIN CARDTEST4 council room implementation ******" >> unittestresults.out 2>&1
-	rm -f *.gcov *.gcda *.gcno
-	gcc -c dominion.c -g  $(CFLAGS)
-	gcc -o cardTest4 cardtest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
-	./cardTest4 >> unittestresults.out 2>&1
-	echo -e  "******************* gcov results *****************" >> unittestresults.out 2>&1
-	gcov -bfu dominion.c >> unittestresults.out 2>&1
-	#gcov dominion.c >> unittestresults.out 2>&1
-	echo -e  "******************* END CARDTEST4 council room implementation ********" >> unittestresults.out 2>&1
-	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
+	./unitTest4 >> unittest4results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> unittest4results.out 2>&1
+	gcov -bfu dominion.c >> unittest4results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> unittest4results.out 2>&1
 
+cardtest1results.out: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g  $(CFLAGS)
+	gcc -o cardtest1 cardtest1.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
+	./cardtest1 >> cardtest1results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest1results.out 2>&1
+	gcov -bfu dominion.c >> cardtest1results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> cardtest1results.out 2>&1
+
+cardtest2results.out: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g  $(CFLAGS)
+	gcc -o cardtest2 cardtest2.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
+	./cardtest2 >> cardtest2results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest2results.out 2>&1
+	gcov -bfu dominion.c >> cardtest2results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> cardtest2results.out 2>&1
+
+cardtest3results.out: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g  $(CFLAGS)
+	gcc -o cardtest3 cardtest3.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
+	./cardtest3 >> cardtest3results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest3results.out 2>&1
+	gcov -bfu dominion.c >> cardtest3results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> cardtest3results.out 2>&1
+
+cardtest4results.out: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g  $(CFLAGS)
+	gcc -o cardtest4 cardtest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
+	./cardtest4 >> cardtest4results.out 2>&1
+	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest4results.out 2>&1
+	gcov -bfu dominion.c >> cardtest4results.out 2>&1
+	echo -e  "END COVERAGE RESULTS\n" >> cardtest4results.out 2>&1
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 

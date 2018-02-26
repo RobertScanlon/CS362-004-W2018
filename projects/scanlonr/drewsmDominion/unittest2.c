@@ -35,7 +35,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 0, "Empty Deck, Hand, Discard, returns 0 smithies");
+	myAssert(retValue, 0, "Empty Deck, Hand, Discard, returns 0 smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = 1
@@ -56,7 +56,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 1, "1 smithy in deck, returns 1 smithies");
+	myAssert(retValue, 1, "1 smithy in deck, returns 1 smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = 0
@@ -77,7 +77,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 1, "1 smithy in hand, returns 1 smithies");
+	myAssert(retValue, 1, "1 smithy in hand, returns 1 smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = 0
@@ -98,7 +98,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 1, "1 smithy in discard, returns 1 smithies");
+	myAssert(retValue, 1, "1 smithy in discard, returns 1 smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = 1
@@ -123,7 +123,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 3, "1 smithy in discard, deck, hand, returns 3 smithies");
+	myAssert(retValue, 3, "1 smithy in discard, deck, hand, returns 3 smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = MAX_DECK
@@ -149,7 +149,7 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, (MAX_DECK * 3), "Total of 3x MAX_DECK smithies");
+	myAssert(retValue, (MAX_DECK * 3), "Total of 3x MAX_DECK smithies", 0);
 
 	/////////////////////////////////////////////////////////////////////
 	// deck = 5 smithy, 5 adventurer
@@ -174,12 +174,14 @@ void testFullDeckCount()
 
 	retValue = fullDeckCount(player, card, &testG);
 
-	myAssert(retValue, 15, "Total of 15 smithies");
+	myAssert(retValue, 15, "Total of 15 smithies", 0);
 }
 
 int
 main()
 {
+	fprintf(stderr, "BEGIN UNITTEST 2 fullDeckCount()\n");
 	testFullDeckCount();
+	fprintf(stderr, "END UNITTEST 2 fullDeckCount()\n");
 	return 0;
 }

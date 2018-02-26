@@ -40,10 +40,10 @@ void testGreatHall()
 	refG.discardCount[player] = 1;
 
 	retValue = cardEffect(card, choice1, choice2, choice3, &testG, handPos, &bonus);
-	myAssert(retValue, 0, "GreatHall implementation returns 0");
-	myAssert(testG.hand[player][testG.handCount[player] - 1], copper, "Player drawn a copper into hand");
-	myAssert(testG.numActions, refG.numActions + 1, "Players action count increased by 1");
-	myAssert(testG.handCount[player], refG.handCount[player], "Handcount remains unchanged as 1 card is drawn and GreatHall is discarded");
+	myAssert(retValue, 0, "GreatHall implementation returns 0", 0);
+	myAssert(testG.hand[player][testG.handCount[player] - 1], copper, "Player drawn a copper into hand", 0);
+	myAssert(testG.numActions, refG.numActions + 1, "Players action count increased by 1", 0);
+	myAssert(testG.handCount[player], refG.handCount[player], "Handcount remains unchanged as 1 card is drawn and GreatHall is discarded", 0);
 
 	// test when deck contains 1 copper
 	initializeGame(2, k, seed, &refG);
@@ -60,15 +60,17 @@ void testGreatHall()
 	refG.discardCount[player] = 0;
 
 	retValue = cardEffect(card, choice1, choice2, choice3, &testG, handPos, &bonus);
-	myAssert(retValue, 0, "GreatHall implementation returns 0");
-	myAssert(testG.hand[player][testG.handCount[player] - 1], copper, "Player drawn a copper into hand");
-	myAssert(testG.numActions, refG.numActions + 1, "Players action count increased by 1");
-	myAssert(testG.handCount[player], refG.handCount[player], "Handcount remains unchanged as 1 card is drawn and GreatHall is discarded");
+	myAssert(retValue, 0, "GreatHall implementation returns 0", 0);
+	myAssert(testG.hand[player][testG.handCount[player] - 1], copper, "Player drawn a copper into hand", 0);
+	myAssert(testG.numActions, refG.numActions + 1, "Players action count increased by 1", 0);
+	myAssert(testG.handCount[player], refG.handCount[player], "Handcount remains unchanged as 1 card is drawn and GreatHall is discarded", 0);
 }
 
 int
 main()
 {
+	fprintf(stderr, "BEGIN CARDTEST3 Great Hall\n");
 	testGreatHall();
+	fprintf(stderr, "END CARDTEST3 Great Hall\n");
 	return 0;
 }

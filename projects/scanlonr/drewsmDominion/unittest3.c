@@ -31,8 +31,8 @@ void testUpdateCoins()
 	testG.handCount[player] = 0;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins, testG.coins, "Empty deck, no bonus: coin count unchanged");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins, testG.coins, "Empty deck, no bonus: coin count unchanged", 0);
 
 	// no cards in hand, 1 bonus
 	bonus = 1;
@@ -45,8 +45,8 @@ void testUpdateCoins()
 	testG.handCount[player] = 0;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 1, testG.coins, "Empty deck, 1 bonus: coin count +1");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 1, testG.coins, "Empty deck, 1 bonus: coin count +1", 0);
 
 	// 1 copper cards in hand, 0 bonus
 	bonus = 0;
@@ -61,8 +61,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = copper;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 1, testG.coins, "1 copper deck, 0 bonus: coin count +1");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 1, testG.coins, "1 copper deck, 0 bonus: coin count +1", 0);
 
 	// 1 copper cards in hand, 1 bonus
 	bonus = 1;
@@ -77,8 +77,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = copper;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 2, testG.coins, "1 copper deck, 1 bonus: coin count +2");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 2, testG.coins, "1 copper deck, 1 bonus: coin count +2", 0);
 
 	// 1 silver cards in hand, 0 bonus
 	bonus = 0;
@@ -93,8 +93,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = silver;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 2, testG.coins, "1 silver deck, 0 bonus: coin count +2");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 2, testG.coins, "1 silver deck, 0 bonus: coin count +2", 0);
 
 	// 1 silver cards in hand, 1 bonus
 	bonus = 1;
@@ -109,8 +109,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = silver;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 3, testG.coins, "1 silver deck, 1 bonus: coin count +3");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 3, testG.coins, "1 silver deck, 1 bonus: coin count +3", 0);
 
 	// 1 gold cards in hand, 0 bonus
 	bonus = 0;
@@ -125,8 +125,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = gold;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 3, testG.coins, "1 gold deck, 0 bonus: coin count +3");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 3, testG.coins, "1 gold deck, 0 bonus: coin count +3", 0);
 
 	// 1 gold cards in hand, 1 bonus
 	bonus = 1;
@@ -141,8 +141,8 @@ void testUpdateCoins()
 	testG.hand[player][0] = gold;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 4, testG.coins, "1 gold deck, 1 bonus: coin count +4");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 4, testG.coins, "1 gold deck, 1 bonus: coin count +4", 0);
 
 	// 1 gold, silver, copper cards in hand, 0 bonus
 	bonus = 0;
@@ -161,8 +161,8 @@ void testUpdateCoins()
 	testG.hand[player][2] = copper;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 6, testG.coins, "1 gold, silver, copper in deck, 0 bonus: coin count +6");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 6, testG.coins, "1 gold, silver, copper in deck, 0 bonus: coin count +6", 0);
 
 	// 1 gold, silver, copper cards in hand, 1 bonus
 	bonus = 1;
@@ -181,8 +181,8 @@ void testUpdateCoins()
 	testG.hand[player][2] = copper;
 
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 7, testG.coins, "1 gold, silver, copper in deck, 1 bonus: coin count +7");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 7, testG.coins, "1 gold, silver, copper in deck, 1 bonus: coin count +7", 0);
 
 	// 10 gold, silver, copper cards in hand, 0 bonus
 	bonus = 0;
@@ -206,8 +206,8 @@ void testUpdateCoins()
 		}
 	}
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 60, testG.coins, "10 gold, silver, copper in deck, 0 bonus: coin count +60");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 60, testG.coins, "10 gold, silver, copper in deck, 0 bonus: coin count +60", 0);
 
 	// 10 gold, silver, copper cards in hand, 10 bonus
 	bonus = 10;
@@ -231,8 +231,8 @@ void testUpdateCoins()
 		}
 	}
 	retValue = updateCoins(player, &testG, bonus);
-	myAssert(retValue, 0, "updateCoins returns 0");
-	myAssert(refG.coins + 70, testG.coins, "10 gold, silver, copper in deck, 10 bonus: coin count +70");
+	myAssert(retValue, 0, "updateCoins returns 0", 0);
+	myAssert(refG.coins + 70, testG.coins, "10 gold, silver, copper in deck, 10 bonus: coin count +70", 0);
 
 }
 
@@ -240,6 +240,8 @@ void testUpdateCoins()
 int
 main()
 {
+	fprintf(stderr, "BEGIN UNITTET 3 updateCoins()\n");
 	testUpdateCoins();
+	fprintf(stderr, "END UNITTET 3 updateCoins()\n");
 	return 0;
 }

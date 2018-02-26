@@ -33,9 +33,9 @@ void testShuffle()
 	// assert that deckCount did not change
 	myAssert(testG.deckCount[player],
 	         refG.deckCount[player],
-		     "Shuffle with empty deck did not change deckCount");
+		     "Shuffle with empty deck did not change deckCount", 0);
 	// assert that shuffle returned -1
-	myAssert(retValue, -1, "Shuffle with empty deck returned -1");
+	myAssert(retValue, -1, "Shuffle with empty deck returned -1", 0);
 
 	//////////////////////////////////////////////////////////////////////
 	// test a deck with 1 card
@@ -55,9 +55,9 @@ void testShuffle()
 	// assert that deckCount did not change
 	myAssert(testG.deckCount[player],
 			 refG.deckCount[player],
-			 "Shuffle with 1 card (smithy) deck did not change deckCount");
+			 "Shuffle with 1 card (smithy) deck did not change deckCount", 0);
 	// assert that shuffle returned -1
-	myAssert(retValue, 0, "Shuffle with 1 card (smithy) deck returned 0");
+	myAssert(retValue, 0, "Shuffle with 1 card (smithy) deck returned 0", 0);
 
 	//////////////////////////////////////////////////////////////////////
 	// test a deck with MAX_DECK cards
@@ -79,9 +79,9 @@ void testShuffle()
 	// assert that deckCount did not change
 	myAssert(testG.deckCount[player],
 			 refG.deckCount[player],
-			 "Shuffle with MAX_DECK cards (smithy) deck did not change deckCount");
+			 "Shuffle with MAX_DECK cards (smithy) deck did not change deckCount", 0);
 	// assert that shuffle returned 0
-	myAssert(retValue, 0, "Shuffle with MAX_DECK cards (smithy) deck returned 0");
+	myAssert(retValue, 0, "Shuffle with MAX_DECK cards (smithy) deck returned 0", 0);
 
 	////////////////////////////////////////////////////////////////////
 	// test that shuffle changes card order
@@ -97,7 +97,7 @@ void testShuffle()
 	retValue = shuffle(player, &testG);
 
 	// assert that shuffle returned 0
-	myAssert(retValue, 0, "Shuffle starting deck returned 0");
+	myAssert(retValue, 0, "Shuffle starting deck returned 0", 0);
 
 	for (int i = 0; i < refG.deckCount[player]; i++) {
 		if (refG.deck[player][i] != testG.deck[player][i]) {
@@ -118,17 +118,19 @@ void testShuffle()
 	}
 
 	// assert that card counts did not change
-	myAssert(testCoppers, refCoppers, "Copper Card Count unchanged");
-	myAssert(testEstates, refEstates, "Estate Card Count unchanged");
+	myAssert(testCoppers, refCoppers, "Copper Card Count unchanged", 0);
+	myAssert(testEstates, refEstates, "Estate Card Count unchanged", 0);
 
 	// assert card order changed
-	myAssert(sameOrder, 0, "Card order changed after shuffle");
+	myAssert(sameOrder, 0, "Card order changed after shuffle", 0);
 }
 
 
 int
 main()
 {
+	fprintf(stderr, "BEGIN UNITTEST 1 shuffle()\n");
 	testShuffle();
+	fprintf(stderr, "END UNITTEST 1 shuffle()\n");
 	return 0;
 }
