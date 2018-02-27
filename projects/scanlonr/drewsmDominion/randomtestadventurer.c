@@ -13,7 +13,7 @@
 #include <math.h>
 
 #define NUMTESTS 10000
-#define MAX_BUGS 1
+#define MAX_BUGS 10
 
 // global counts of different bugs
 int treasureBug = 0;
@@ -184,7 +184,7 @@ void adventurerRandomTester()
 
         // if any assertions failed, print gamestate
         if (adventurerOracle(G) != 0) {
-            printGameState(G);
+            //printGameState(G);
             bugCount++;
         }
         free(G);

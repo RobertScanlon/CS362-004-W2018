@@ -1,1 +1,92 @@
 Bug Report
+
+*** bug in Adventurer card implementation ***
+
+BEGIN CARDTEST 2 Adventurer
+Play adventurer returns 0
+TEST PASSED : 0 = 0
+Playing adventurer inceases num coppers in hand by 2, when only 2 coppers in discard
+TEST PASSED : 6 = 6
+Hand count increases by 2 when discard contains only treasure cards
+TEST PASSED : 7 = 7
+Play adventurer returns 0
+TEST PASSED : 0 = 0
+Playing adventurer inceases num silvers in hand by 2, when only 2 silvers in discard
+TEST PASSED : 2 = 2
+Hand count increases by 2 when discard contains only treasure cards
+TEST PASSED : 7 = 7
+Play adventurer returns 0
+TEST PASSED : 0 = 0
+Playing adventurer inceases num golds in hand by 2, when only 2 golds in discard
+TEST PASSED : 2 = 2
+Hand count increases by 2 when discard contains only treasure cards
+TEST PASSED : 7 = 7
+Play adventurer returns 0
+TEST PASSED : 0 = 0
+Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper]
+TEST PASSED : 0 = 0
+Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper]
+TEST PASSED : 1 = 1
+Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper]
+TEST PASSED : 5 = 5
+Hand count increases by 2 when discard contains only treasure cards
+TEST PASSED : 7 = 7
+Play adventurer returns 0
+TEST PASSED : 0 = 0
+Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]
+TEST PASSED : 0 = 0
+Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]
+TEST PASSED : 1 = 1
+Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]
+TEST PASSED : 5 = 5
+Hand count increases by 2 when discard contains only treasure cards, smithy
+TEST PASSED : 7 = 7
+Discard count should increase by 1, as the drawn smithy should be discarded
+TEST FAILED : 0 != 1
+Num of smithies in hand should remain unchanged
+TEST PASSED : 0 = 0
+END CARDTEST 2 Adventurer
+
+BEGIN ADVENTURER RANDOM TESTER 10000 ITERATIONS
+TEST FAILED: 145!=146: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 254!=255: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 379!=380: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 168!=169: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 484!=485: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 70!=71: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 73!=74: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 346!=347: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 433!=434: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+TEST FAILED: 145!=146: Hand Count increased by 1 (+2 treasure, -1 card played)
+TEST FAILED: 0!=1: Non treasure cards discarded
+END ADVENTURER RANDOM TESTER 10000 ITERATIONS
+TESTING FOUND AT LEAST 10 BUGS
+
+non-treasure cards drawn during play are not removed from the players
+hand. this bug was uncovered by both the unit (cardtest2) and
+random (randomtestadventurer) testing.
+
+*** bug in Steward card implementation ***
+
+BEGIN STEWARD RANDOM TESTER 10000 ITERATIONS
+TEST FAILED: 144!=145: played card discarded
+TEST FAILED: 105!=106: played card discarded, 2 cards trashed
+TEST FAILED: 495!=496: played card discarded, 2 cards trashed
+TEST FAILED: 305!=306: +2 cards drawn, played card discarded
+TEST FAILED: 430!=431: played card discarded, 2 cards trashed
+TEST FAILED: 403!=404: +2 cards drawn, played card discarded
+TEST FAILED: 460!=461: +2 cards drawn, played card discarded
+TEST FAILED: 201!=202: played card discarded
+TEST FAILED: 160!=161: +2 cards drawn, played card discarded
+TEST FAILED: 392!=393: played card discarded
+END STEWARD RANDOM TESTER 10000 ITERATIONS
+TESTING FOUND AT LEAST 10 BUGS

@@ -12,7 +12,7 @@
 #include <string.h>
 
 #define NUMTESTS 10000
-#define MAX_BUGS 1
+#define MAX_BUGS 10
 
 int handCountBug = 0;
 int coinCountBug = 0;
