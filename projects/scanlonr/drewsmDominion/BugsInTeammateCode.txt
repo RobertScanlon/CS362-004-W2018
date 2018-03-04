@@ -1,92 +1,120 @@
+Robert Scanlon
+CS 362 Winter 2018
+Assignment 5
 Bug Report
 
-*** bug in Adventurer card implementation ***
+Using Code from Mel Drews (drewsm)
 
-BEGIN CARDTEST 2 Adventurer
-Play adventurer returns 0
-TEST PASSED : 0 = 0
-Playing adventurer inceases num coppers in hand by 2, when only 2 coppers in discard
-TEST PASSED : 6 = 6
-Hand count increases by 2 when discard contains only treasure cards
-TEST PASSED : 7 = 7
-Play adventurer returns 0
-TEST PASSED : 0 = 0
-Playing adventurer inceases num silvers in hand by 2, when only 2 silvers in discard
-TEST PASSED : 2 = 2
-Hand count increases by 2 when discard contains only treasure cards
-TEST PASSED : 7 = 7
-Play adventurer returns 0
-TEST PASSED : 0 = 0
-Playing adventurer inceases num golds in hand by 2, when only 2 golds in discard
-TEST PASSED : 2 = 2
-Hand count increases by 2 when discard contains only treasure cards
-TEST PASSED : 7 = 7
-Play adventurer returns 0
-TEST PASSED : 0 = 0
-Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper]
-TEST PASSED : 0 = 0
-Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper]
-TEST PASSED : 1 = 1
-Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper]
-TEST PASSED : 5 = 5
-Hand count increases by 2 when discard contains only treasure cards
-TEST PASSED : 7 = 7
-Play adventurer returns 0
-TEST PASSED : 0 = 0
-Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]
-TEST PASSED : 0 = 0
-Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]
-TEST PASSED : 1 = 1
-Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]
-TEST PASSED : 5 = 5
-Hand count increases by 2 when discard contains only treasure cards, smithy
-TEST PASSED : 7 = 7
-Discard count should increase by 1, as the drawn smithy should be discarded
-TEST FAILED : 0 != 1
-Num of smithies in hand should remain unchanged
-TEST PASSED : 0 = 0
-END CARDTEST 2 Adventurer
+Dominion-001: Bug in implementation of Adventurer card.
 
-BEGIN ADVENTURER RANDOM TESTER 10000 ITERATIONS
-TEST FAILED: 145!=146: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 254!=255: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 379!=380: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 168!=169: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 484!=485: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 70!=71: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 73!=74: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 346!=347: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 433!=434: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-TEST FAILED: 145!=146: Hand Count increased by 1 (+2 treasure, -1 card played)
-TEST FAILED: 0!=1: Non treasure cards discarded
-END ADVENTURER RANDOM TESTER 10000 ITERATIONS
-TESTING FOUND AT LEAST 10 BUGS
+Details:
 
-non-treasure cards drawn during play are not removed from the players
-hand. this bug was uncovered by both the unit (cardtest2) and
-random (randomtestadventurer) testing.
+    Type: Bug
+    Priority: Major
+    Affected Version: drewsm-assignment-4 branch
+    Components: Card Implementation
+    Labels: None
+    Status: Open
+    Resolution: Unresolved
+    Fixed Version: None
 
-*** bug in Steward card implementation ***
+Description:
 
-BEGIN STEWARD RANDOM TESTER 10000 ITERATIONS
-TEST FAILED: 144!=145: played card discarded
-TEST FAILED: 105!=106: played card discarded, 2 cards trashed
-TEST FAILED: 495!=496: played card discarded, 2 cards trashed
-TEST FAILED: 305!=306: +2 cards drawn, played card discarded
-TEST FAILED: 430!=431: played card discarded, 2 cards trashed
-TEST FAILED: 403!=404: +2 cards drawn, played card discarded
-TEST FAILED: 460!=461: +2 cards drawn, played card discarded
-TEST FAILED: 201!=202: played card discarded
-TEST FAILED: 160!=161: +2 cards drawn, played card discarded
-TEST FAILED: 392!=393: played card discarded
-END STEWARD RANDOM TESTER 10000 ITERATIONS
-TESTING FOUND AT LEAST 10 BUGS
+    The implementation of the Adventurer card does not correctly add drawn
+    cards which are not treasure cards to the player's discard pile. This bug
+    was uncovered during unit testing of the Adventurer implementation.
+
+    Minimal/Real Word Example:
+
+        gameState 'G' initialized and containing the following values.
+        numPlayers: 2
+    	whoseTurn: 0
+    	handCount: 5
+    		hand[0]: 4
+    		hand[1]: 4
+    		hand[2]: 4
+    		hand[3]: 4
+    		hand[4]: 7
+    	deckCount: 4
+    		deck[0]: 6
+    		deck[1]: 5
+    		deck[2]: 4
+    		deck[3]: 13
+    	discardCount: 0
+
+        adventurerEffect(&G, G->whoseTurn);
+
+        After this call, the Smithy card '13' will not be correctly added to
+        the players discard pile.
+
+Dominion-002: Bug in implementation of Steward card.
+
+Details:
+
+    Type: Bug
+    Priority: Major
+    Affected Version: drewsm-assignment-4 branch
+    Components: Card Implementation
+    Labels: None
+    Status: Open
+    Resolution: Unresolved
+    Fixed Versions: None
+
+Description:
+
+    The implementation of the Steward card fails to remove the currently played
+    card from the player's hand. A correct implementation should move the
+    currently played card into the player's played card pile. This bug was
+    revealed during random testing of the Steward implementation. This bug shows
+    up regardless of the value of the player's 'choice1'.
+
+    Minimal/Real Word Example:
+
+    gameState 'G' initialized and containing the following values.
+    numPlayers:      2
+    whoseTurn:       0
+    phase:           0
+    numActions:      1
+    coins:           23
+    numBuys:         1
+    handCount:       431
+    deckCount:       37
+    discardCount:    100
+    playedCardCount: 0
+    choice1 = 0 or 3
+    stewardEffect(choice1, 0, 0, &G, 0, G->whoseTurn);
+
+    gameState 'G' initialized and containing the following values.
+    numPlayers:      2
+    whoseTurn:       0
+    phase:           0
+    numActions:      1
+    coins:           41
+    numBuys:         1
+    handCount:       96
+    deckCount:       303
+    discardCount:    472
+    playedCardCount: 0
+    choice1 = 2
+    stewardEffect(choice1, 0, 0, &G, 0, G->whoseTurn);
+
+    gameState 'G' initialized and containing the following values.
+    numPlayers:      2
+    whoseTurn:       0
+    phase:           0
+    numActions:      1
+    coins:           3
+    numBuys:         1
+    handCount:       85
+    deckCount:       412
+    discardCount:    269
+    playedCardCount: 0
+    choice1 = 1;
+    stewardEffect(choice1, 0, 0, &G, 0, G->whoseTurn);
+
+    Note that this bug is always revealed during random testing, when the
+    gameState is created with random combinations of card within the
+    various 'piles'. Therefore, it is unlikely that the specific combination
+    of cards within any of the piles affects the production of this bug. For
+    this reason, and the sake of brevity, the specific order of cards
+    for the gameStates which revealed this bug are omitted above.

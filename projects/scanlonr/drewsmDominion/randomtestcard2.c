@@ -128,6 +128,7 @@ void StewardRoomRandomTester()
 
         if (StewardRoomOracle(G, choice1, p) != 0) {
             bugCount++;
+            printGameState(G);
         }
 		free(G);
 	}

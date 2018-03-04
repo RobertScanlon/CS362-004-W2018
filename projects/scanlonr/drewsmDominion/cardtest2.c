@@ -51,8 +51,8 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
-	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
-	retValue = adventurerEffect(&testG, testG.whoseTurn);
+	retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
+	//retValue = adventurerEffect(&testG, testG.whoseTurn);
 
 	// assert correct return value
 	myAssert(retValue, 0, "Play adventurer returns 0", 0);
@@ -239,6 +239,24 @@ void testAdventurer()
 	handPos = testG.handCount[player] - 1;
 	refG.hand[player][refG.handCount[player] - 1] = adventurer;
 
+
+	fprintf(stderr, "*** BEGIN PRINT GAME STATE ***\n");
+	fprintf(stderr, "\tnumPlayers: %d\n", testG.numPlayers);
+	fprintf(stderr, "\twhoseTurn: %d\n", testG.whoseTurn);
+	fprintf(stderr, "\thandCount: %d\n", testG.handCount[player]);
+	for (int i = 0; i < testG.handCount[player]; i++) {
+		fprintf(stderr, "\t\thand[%d]: %d\n",i, testG.hand[player][i]);
+	}
+	fprintf(stderr, "\tdeckCount: %d\n", testG.deckCount[player]);
+	for (int i = 0; i < testG.deckCount[player]; i++) {
+		fprintf(stderr, "\t\tdeck[%d]: %d\n",i, testG.deck[player][i]);
+	}
+	fprintf(stderr, "\tdiscardCount: %d\n", testG.discardCount[player]);
+	for (int i = 0; i < testG.discardCount[player]; i++) {
+		fprintf(stderr, "\t\tdiscard[%d]: %d\n",i, testG.discard[player][i]);
+	}
+	fprintf(stderr, "*** END PRINT GAME STATE ***\n");
+
 	//retValue = cardEffect(adventurer, choice1, choice2, choice3, &testG, handPos, &bonus);
 	retValue = adventurerEffect(&testG, testG.whoseTurn);
 
@@ -284,12 +302,16 @@ void testAdventurer()
 			testcoppers++;
 		}
 	}
-	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]", 0);
-	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]", 0);
-	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]", 0);
-	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when discard contains only treasure cards, smithy", 0);
+	myAssert(testgolds, refgolds, "Playing adventurer inceases num golds in hand by 0, when deck = [gold, silver, copper, smithy]", 0);
+	myAssert(testsilvers, refsilvers + 1, "Playing adventurer inceases num silver in hand by 1, when deck = [gold, silver, copper, smithy]", 0);
+	myAssert(testcoppers, refcoppers + 1, "Playing adventurer inceases num copper in hand by 1, when deck = [gold, silver, copper, smithy]", 0);
+	myAssert(testG.handCount[player], refG.handCount[player] + 2, "Hand count increases by 2 when deck contains only treasure cards, smithy", 0);
 	// discard count should increase by one, bc a smithy was pulled from deck
 	myAssert(testG.discardCount[player], refG.discardCount[player] + 1, "Discard count should increase by 1, as the drawn smithy should be discarded", 0);
+
+
+
+
 	int testSmithies = 0;
 	int refSmithies = 0;
 	for (int i = 0; i < refG.handCount[player]; i++) {

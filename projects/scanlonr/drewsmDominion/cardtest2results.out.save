@@ -27,15 +27,31 @@ Playing adventurer inceases num copper in hand by 1, when discard = [gold, silve
 TEST PASSED : 5 = 5
 Hand count increases by 2 when discard contains only treasure cards
 TEST PASSED : 7 = 7
+*** BEGIN PRINT GAME STATE ***
+	numPlayers: 2
+	whoseTurn: 0
+	handCount: 5
+		hand[0]: 4
+		hand[1]: 4
+		hand[2]: 4
+		hand[3]: 4
+		hand[4]: 7
+	deckCount: 4
+		deck[0]: 6
+		deck[1]: 5
+		deck[2]: 4
+		deck[3]: 13
+	discardCount: 0
+*** END PRINT GAME STATE ***
 Play adventurer returns 0
 TEST PASSED : 0 = 0
-Playing adventurer inceases num golds in hand by 0, when discard = [gold, silver, copper, smithy]
+Playing adventurer inceases num golds in hand by 0, when deck = [gold, silver, copper, smithy]
 TEST PASSED : 0 = 0
-Playing adventurer inceases num silver in hand by 1, when discard = [gold, silver, copper, smithy]
+Playing adventurer inceases num silver in hand by 1, when deck = [gold, silver, copper, smithy]
 TEST PASSED : 1 = 1
-Playing adventurer inceases num copper in hand by 1, when discard = [gold, silver, copper, smithy]
+Playing adventurer inceases num copper in hand by 1, when deck = [gold, silver, copper, smithy]
 TEST PASSED : 5 = 5
-Hand count increases by 2 when discard contains only treasure cards, smithy
+Hand count increases by 2 when deck contains only treasure cards, smithy
 TEST PASSED : 7 = 7
 Discard count should increase by 1, as the drawn smithy should be discarded
 TEST FAILED : 0 != 1

@@ -128,6 +128,7 @@ cardtest3results.out: dominion.o myAssert.o cardtest3results.out
 	./cardtest3 >> cardtest3results.out 2>&1
 	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest3results.out 2>&1
 	gcov -bfu dominion.c >> cardtest3results.out 2>&1
+	cat dominion.c.gcov >> cardtest3results.out 2>&1
 	echo -e  "END COVERAGE RESULTS\n" >> cardtest3results.out 2>&1
 
 cardtest4results.out: dominion.o myAssert.o cardtest4results.out
@@ -137,6 +138,7 @@ cardtest4results.out: dominion.o myAssert.o cardtest4results.out
 	./cardtest4 >> cardtest4results.out 2>&1
 	echo -e  "BEGIN COVERAGE RESULTS\n" >> cardtest4results.out 2>&1
 	gcov -bfu dominion.c >> cardtest4results.out 2>&1
+	cat dominion.c.gcov >> cardtest4results.out 2>&1
 	echo -e  "END COVERAGE RESULTS\n" >> cardtest4results.out 2>&1
 
 a5tests: cardtest4results.out cardtest3results.out cardtest2results.out cardtest1results.out unittest4results.out unittest3results.out unittest2results.out unittest1results.out randomtestcard2.out randomtestcard1.out randomtestadventurer.out
@@ -148,5 +150,5 @@ clean:
 	rm -rf *.dSYM
 	rm -f unitTest*
 	rm -f cardTest*
-	rm -f randomtestadventurer randomtestcard1 randomtestcard2
+	rm -f randomtestadventurer randomtestcard1 randomtestcard2 cardtest4 cardtest3 cardtest2 cardtest1 unittest4 unitTest4 unitTest3 unitTest2 unitTest1
 	rm -f *.tmp
