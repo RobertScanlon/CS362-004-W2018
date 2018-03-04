@@ -157,6 +157,10 @@ unittestresults.out: dominion.o myAssert.o
 	echo -e  "******************* END CARDTEST4 council room implementation ********" >> unittestresults.out 2>&1
 	echo -e  "**********************************************************************\n\n" >> unittestresults.out 2>&1
 
+cardTest4: dominion.o myAssert.o
+	rm -f *.gcov *.gcda *.gcno
+	gcc -c dominion.c -g  $(CFLAGS)
+	gcc -o cardTest4 cardtest4.c -g dominion.o rngs.o myAssert.o -g $(CFLAGS)
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
