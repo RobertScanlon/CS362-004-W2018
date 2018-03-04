@@ -1,0 +1,20 @@
+council_room implementation returns 0
+TEST PASSED : 0 = 0
+Playing council_room increases players hand count by 3 (accounting for discard of council_room)
+TEST PASSED : 8 = 8
+Playing council_room increased numBuys by +1
+TEST PASSED : 2 = 2
+Other players hand count increased by 1
+TEST PASSED : 1 = 1
+council_room implementation returns 0
+TEST PASSED : 0 = 0
+Playing council_room increases players hand count by 3 (accounting for discard of council_room)
+TEST PASSED : 8 = 8
+Playing council_room increased numBuys by +1
+TEST PASSED : 2 = 2
+Other players hand count increased by 1
+TEST PASSED : 1 = 1
+Other players hand count increased by 1
+TEST PASSED : 1 = 1
+Other players hand count increased by 1
+TEST PASSED : 1 = 1

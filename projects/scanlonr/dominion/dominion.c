@@ -1352,6 +1352,9 @@ int playCouncilRoom(struct gameState *state, int currentPlayer, int i, int handP
     //put played card in played card pile
     discardCard(handPos, currentPlayer, state, 0);
 
+    // bug fix 3-4-18
+    // add return statement
+    return 0;
 }
 
 //end of dominion.c
