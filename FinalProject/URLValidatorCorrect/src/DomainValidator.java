@@ -86,6 +86,7 @@ public class DomainValidator implements Serializable {
     private static final String DOMAIN_NAME_REGEX =
             "^(?:" + DOMAIN_LABEL_REGEX + "\\.)+" + "(" + TOP_LABEL_REGEX + ")\\.?$";
 
+
     private final boolean allowLocal;
 
     /**
