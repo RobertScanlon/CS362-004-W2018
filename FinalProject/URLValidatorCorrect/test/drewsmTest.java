@@ -32,12 +32,28 @@ public class drewsmTest extends TestCase {
 		   url = br.readLine();
 		   try {
 			   System.out.println(urlVal.isValid(url));
-		   } catch(Exception e) {
-			   System.out.println(e.getMessage());
+		   } catch(java.lang.NullPointerException npe) {
+			   System.out.println(npe.getMessage());
+		   } catch (Throwable t) {
+			   System.out.println("crash!");
 		   }
 		   
 	      } while(!url.equals("stop"));
-	   }
+	   
+//	   do {
+//		   url = br.readLine();
+//		   //try {
+//			   System.out.println(urlVal.isValid(url));
+//		   //} catch(java.lang.NullPointerException npe) {
+//			//   System.out.println(npe.getMessage());
+//		   //} catch (Exception e) {
+//			   
+//		  // }
+//		   
+//	      } while(!url.equals("stop"));
+	   
+   }
+
 	   
    
    
@@ -72,6 +88,7 @@ public class drewsmTest extends TestCase {
 //		   e.printStackTrace();
 //	   }
 //	   System.out.println(s);
+	   
    }
 	   
 
