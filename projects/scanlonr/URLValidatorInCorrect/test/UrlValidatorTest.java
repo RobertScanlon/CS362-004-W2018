@@ -33,18 +33,42 @@ public class UrlValidatorTest extends TestCase {
    {
 	   //You can use this function to implement your manual testing
 	   //Code suggested by "Java A Beginner's Guid, 6th Edition" by Schildt, Herbert, 2014
-	   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//	   BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
-	   String url;
-	   System.out.println("Enter URLs for testing, one per line. Type 'stop' on a line by itself to quit");
-	   do {
-		   url = br.readLine();
+	   
+//	   String url;
+//	   System.out.println("Enter URLs for testing, one per line. Type 'stop' on a line by itself to quit");
+//	   do {
+//		   url = br.readLine();
+//		   try {
+//			   System.out.println(urlVal.isValid(url));
+//		   } catch (Throwable t) {
+//			   t.printStackTrace();
+//		   }		   
+//	   } while(!url.equals("stop"));
+	   
+	   String manualTestUrls[] = {
+			   new String("www.google.com"),
+			   new String("http://www.google.com"),
+			   new String("http://badurl\\\\\\\\\\\\\\%%%%%%%"),
+			   new String("http://goo"),
+			   new String("ftp://google.com"),
+			   new String("http://google.com/test"),
+			   new String("http://google.com/test/file"),
+			   new String("https://google.com")
+	   };
+	   Boolean result = false;
+	   
+	   for (int i = 0; i < manualTestUrls.length; i++) {
+		   System.out.print("Testing: " + manualTestUrls[i] + " Result: ");
 		   try {
-			   System.out.println(urlVal.isValid(url));
-		   } catch (Throwable t) {
-			   t.printStackTrace();
-		   }		   
-	   } while(!url.equals("stop"));	   
+			   result = urlVal.isValid(manualTestUrls[i]);
+			   System.out.println(result);
+		   } catch (Throwable err) {
+			   System.out.println("Crash");
+			   err.printStackTrace();
+		   }
+	   }
    }
 
 	   
@@ -282,7 +306,7 @@ public class UrlValidatorTest extends TestCase {
 	   Boolean crashed = false;
 	   
 	   // loop through all schemas
-	   for (int schIdx = 0; schIdx < testSchemes.length - 1; schIdx++) {
+	   for (int schIdx = 0; schIdx < testSchemes.length; schIdx++) {
 		   
 		   // all authorities
 		   for (int authIdx = 0; authIdx < testAuthorities.length; authIdx++) {
@@ -347,13 +371,20 @@ public class UrlValidatorTest extends TestCase {
    public static void main(String args[]) throws IOException
    {
 	   UrlValidatorTest fct = new UrlValidatorTest("url test");
-//	   fct.testManualTest();
-//	   fct.testYourFirstPartition();
-//	   fct.testYourSecondPartition();
-//	   fct.testYourThirdPartition();
-//	   fct.testYourFourthPartition();
+	   System.out.println("***** Starting Manual Tests *****");
+	   fct.testManualTest();
+	   System.out.println("***** Starting Partition 1 Tests *****");
+	   fct.testYourFirstPartition();
+	   System.out.println("***** Starting Partition 2 Tests *****");
+	   fct.testYourSecondPartition();
+	   System.out.println("***** Starting Partition 3 Tests *****");
+	   fct.testYourThirdPartition();
+	   System.out.println("***** Starting Partition 4 Tests *****");
+	   fct.testYourFourthPartition();
+	   System.out.println("***** Starting testIsValid See ./testIsValid.log for output *****");
 	   fct.testIsValid();
-}
+	   System.out.println("***** All Testing Completed *****");
+   }
 	   
 
 }
